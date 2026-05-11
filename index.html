@@ -4254,7 +4254,10 @@ body.sp-locked { overflow: hidden; }
       <div class="pane-form">
         <div class="form-intro">Devis gratuit sous 24h</div>
 
-        <form class="form" id="contact-form" style="scroll-margin-top:6rem;" onsubmit="event.preventDefault(); alert('Merci ! Ton message sera envoyé (formulaire à brancher à l\\'envoi réel).');">
+        <form class="form" id="contact-form" style="scroll-margin-top:6rem;"
+              action="https://formspree.io/f/mgodryzd"
+              method="POST"
+              onsubmit="handleContactSubmit(event)">
           <div class="field">
             <label for="c-name">Nom &amp; prénom <span class="req">(obligatoire)</span></label>
             <input id="c-name" name="name" type="text" autocomplete="name" required>
@@ -4646,6 +4649,54 @@ body.sp-locked { overflow: hidden; }
       if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
     });
   })();
+
+  // ——— Contact form → Formspree ———
+  window.handleContactSubmit = async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const note = form.querySelector('.form-note');
+    const originalNoteText = note ? note.textContent : '';
+    const originalBtnHTML = submitBtn ? submitBtn.innerHTML : '';
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.65';
+      submitBtn.innerHTML = 'Envoi en cours…';
+    }
+
+    try {
+      const data = new FormData(form);
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        form.reset();
+        if (note) {
+          note.textContent = '✓ Message envoyé — réponse sous 24h ouvrées';
+          note.style.color = 'var(--accent)';
+        }
+        if (submitBtn) {
+          submitBtn.innerHTML = 'Merci, à très vite !';
+          submitBtn.style.opacity = '1';
+        }
+      } else {
+        throw new Error('Échec envoi (' + res.status + ')');
+      }
+    } catch (err) {
+      if (note) {
+        note.textContent = '⚠ Une erreur est survenue. Réessaie ou écris à alban.product@gmail.com';
+        note.style.color = '#c0392b';
+      }
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.innerHTML = originalBtnHTML;
+      }
+    }
+  };
 </script>
 </body>
 </html>
