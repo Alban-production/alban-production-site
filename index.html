@@ -3,7 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alban Production — Production audiovisuelle, Lyon</title>
+<title>Alban Production — Production audiovisuelle, Bourg-en-Bresse</title>
+<meta name="description" content="Alban Production · Production audiovisuelle haut de gamme à Bourg-en-Bresse (Ain, Auvergne-Rhône-Alpes). Films d'entreprise, brand films, captations sportives et événementielles.">
+<meta name="author" content="Alban Dubois">
+<meta name="keywords" content="production audiovisuelle, vidéaste, Bourg-en-Bresse, Ain, Auvergne-Rhône-Alpes, film d'entreprise, brand film, captation sportive, réalisateur, chef opérateur, Alban Dubois">
+
+<!-- Open Graph (Facebook, LinkedIn, etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Alban Production — Production audiovisuelle, Bourg-en-Bresse">
+<meta property="og:description" content="Production audiovisuelle haut de gamme. Films d'entreprise, brand films, captations sportives et événementielles.">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="https://alban-production.fr">
+<meta property="og:image" content="https://alban-production.fr/portrait.JPG">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Alban Production — Production audiovisuelle, Bourg-en-Bresse">
+<meta name="twitter:description" content="Production audiovisuelle haut de gamme. Films d'entreprise, brand films, captations sportives et événementielles.">
+<meta name="twitter:image" content="https://alban-production.fr/portrait.JPG">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="icone.svg">
+<link rel="apple-touch-icon" href="icone.svg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,500;1,600&family=Instrument+Serif:ital@0;1&family=Montserrat:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -298,7 +320,12 @@ body {
   cursor: pointer;
   overflow: hidden;
   transition: flex 0.5s var(--ease-out);
+  -webkit-tap-highlight-color: rgba(255,106,26,0.2);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
 }
+.split-side:active { background-color: rgba(255,106,26,0.04); }
 .split-sport {
   background: var(--off-black);
   color: #f5f5f0;
@@ -2731,31 +2758,66 @@ body.sp-locked { overflow: hidden; }
 ═══════════════════════════════════════════════ */
 @media (max-width: 768px) {
 
-  /* Landing — meta bar : on cache l'heure pour éviter le chevauchement avec À propos / Contact */
+  /* Landing — meta bar : barre fixe en haut avec fond sombre solide,
+     mix-blend-mode désactivé (instable sur Chrome Android) */
+  .meta-bar {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    mix-blend-mode: normal !important;
+    background: #0a0a0b !important;
+    color: #fff !important;
+    padding: 0.85rem 1rem !important;
+    position: fixed !important;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
   .meta-bar .center { display: none !important; }
-  .meta-bar .meta-links { font-size: 10px !important; letter-spacing: 0.18em !important; }
-  .meta-bar .meta-links .sep { margin: 0 0.4em !important; }
+  .meta-bar .left { display: none !important; }
+  .meta-bar { justify-content: center !important; }
+  .meta-bar .right.meta-links {
+    flex: 0 0 auto;
+    color: #fff !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85em;
+    text-align: center !important;
+  }
+  .meta-bar .meta-links a { color: #fff !important; opacity: 0.95; }
+  .meta-bar .meta-links { font-size: 11px !important; letter-spacing: 0.18em !important; }
+  .meta-bar .meta-links .sep { opacity: 0.45; color: #fff !important; margin: 0 !important; }
+  .meta-bar .meta-logo { filter: brightness(0) invert(1); height: 22px !important; }
 
-  /* Landing — gros logo en haut, agrandi */
-  .logo-straddle { width: min(360px, 72vw) !important; top: 20% !important; }
-  .logo-half .txt { font-size: clamp(2rem, 7.5vw, 3rem) !important; }
+  /* Force le wrapper du split à occuper toute la hauteur viewport
+     pour que les positions en % soient prédictibles
+     ⚠ on ne cible QUE landing.active sinon on casse le masquage par .view */
+  #landing.active { display: flex !important; flex-direction: column !important; min-height: 100dvh; padding-top: 56px; }
+  #landing.active .split-wrap { flex: 1 1 auto; min-height: 78dvh !important; }
 
-  /* Landing — titres latéraux descendus à mi-hauteur */
+  /* Landing — gros logo en haut */
+  .logo-straddle { width: min(340px, 70vw) !important; top: 20% !important; }
+  .logo-half .txt { font-size: clamp(1.9rem, 7vw, 2.8rem) !important; }
+
+  /* Landing — titres : flow normal avec margin-top fixe en dvh */
   .side-center {
     align-self: start !important;
-    margin-top: 40vh !important;
-    gap: 1.25rem !important;
+    margin-top: 38dvh !important;
+    display: block !important;
+    gap: 0 !important;
   }
-  .split-sport .side-title { font-size: clamp(2rem, 7vw, 3rem) !important; }
-  .split-corp  .side-title { font-size: clamp(2.1rem, 7.4vw, 3.2rem) !important; }
-  .split-sport .side-center { transform: none !important; }
+  .split-sport .side-title { font-size: clamp(1.85rem, 6.8vw, 2.6rem) !important; }
+  .split-corp  .side-title { font-size: clamp(2rem, 7.2vw, 2.8rem) !important; }
+  .split-sport .side-center,
   .split-sport:hover .side-center,
   .split-corp:hover .side-center { transform: none !important; }
 
-  /* Landing — descriptions placées sous les titres */
-  .side-desc {
+  /* Descriptions : positionnées par le HAUT pour que sport et corpo
+     soient alignées sur la même ligne, quelle que soit la longueur du texte */
+  .split-side .side-desc {
     position: absolute !important;
-    top: 62% !important;
+    top: 68dvh !important;
+    bottom: auto !important;
     left: 4vw !important;
     right: 4vw !important;
     font-size: 12.5px !important;
@@ -2790,8 +2852,12 @@ body.sp-locked { overflow: hidden; }
   .clients-scatter .logo.xl img  { transform: scale(1.18) !important; }
 
   /* Nav — sur mobile : utilise toute la largeur pour respirer
-     Layout : [AP]   [À propos · Contact]   [→ Corp / → Sport] [⌂] */
-  .topnav {
+     Layout : [AP]   [À propos · Contact]   [→ Corp / → Sport] [⌂]
+     ⚠ display:none de l'inline-style sur la landing reste prioritaire grâce au :not() */
+  .topnav.sport,
+  .topnav.corp,
+  .topnav.about,
+  .topnav.contact {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
@@ -2828,6 +2894,11 @@ body.sp-locked { overflow: hidden; }
   #contact-view .field input,
   #contact-view .field textarea,
   #contact-view .field select { font-size: 16px !important; } /* iOS zoom fix */
+  /* Contact mobile — masque email + téléphone pour remonter le reste
+     (les coordonnées restent disponibles dans le footer) */
+  #contact-view .email-big { display: none !important; }
+  #contact-view #contact-infos { margin-top: 0 !important; }
+  #contact-view .contact-block:has(a[href^="tel:"]) { display: none !important; }
 
   /* Avis cards — espace mieux contenu */
   .corp-avis { padding: 4.5rem 1.5rem !important; }
@@ -4494,7 +4565,7 @@ body.sp-locked { overflow: hidden; }
   function goLanding() {
     setView('landing');
     currentView = 'landing';
-    nav.style.display = 'none';
+    nav.style.setProperty('display', 'none', 'important');
     grain.className = 'grain';
     window.scrollTo(0,0);
   }
