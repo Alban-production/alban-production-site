@@ -1333,18 +1333,22 @@ body {
   gap: 0;
 }
 @media(min-width: 900px) {
-  .corp-avis-grid { grid-template-columns: repeat(3, 1fr); gap: 0; }
+  .corp-avis-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
 }
 .corp-avis-card {
-  border-top: 1px solid var(--line-light);
-  padding: 2.5rem 0;
+  margin: 0;
+  padding: 2.25rem 1.75rem 1.75rem;
+  border: 1px solid var(--line-light);
+  background: var(--paper);
+  border-radius: 4px;
   position: relative;
+  display: flex; flex-direction: column; gap: 1.25rem;
+  transition: border-color 0.4s var(--ease-out), background 0.4s var(--ease-out), transform 0.4s var(--ease-out);
 }
-@media(min-width: 900px) {
-  .corp-avis-card { padding: 2.5rem 2rem; border-top: 1px solid var(--ink); }
-  .corp-avis-card + .corp-avis-card { border-left: 1px solid var(--line-light); }
-  .corp-avis-card:first-child { padding-left: 0; }
-  .corp-avis-card:last-child  { padding-right: 0; }
+.corp-avis-card:hover {
+  border-color: rgba(255,106,26,0.45);
+  background: #fefdf9;
+  transform: translateY(-2px);
 }
 .corp-avis-card .quote-mark {
   font-family: var(--font-serif-accent);
@@ -1362,8 +1366,9 @@ body {
   line-height: 1.7;
   color: var(--ink);
   letter-spacing: -0.005em;
-  margin-bottom: 2rem;
-  max-width: 38ch;
+  margin: 0;
+  max-width: none;
+  flex: 1 1 auto;
 }
 .corp-avis-card blockquote em {
   font-family: var(--font-serif);
@@ -1379,6 +1384,7 @@ body {
   display: flex; flex-direction: column; gap: 0.25rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--line-light);
+  margin-top: auto;
 }
 .corp-avis-card .who {
   font-family: var(--font-corp);
@@ -3368,17 +3374,28 @@ body.sp-locked { overflow: hidden; }
 
         <figure class="corp-avis-card">
           <span class="quote-mark" aria-hidden="true">&ldquo;</span>
-          <blockquote>Le film a <em>renforcé notre image de marque</em> bien au-delà de ce que nous attendions. L'impact a été immédiat&nbsp;— en interne comme auprès de nos clients, il continue de porter notre discours plusieurs mois après sa diffusion.</blockquote>
+          <blockquote>Alban est très professionnel&nbsp;! Réactif et son travail est d'une <em>qualité exceptionnelle.</em> Je travaille tout le temps avec lui — foncez, jamais déçue&nbsp;!</blockquote>
+          <figcaption>
+            <span class="who">Vanessa Douillet</span>
+          </figcaption>
         </figure>
 
         <figure class="corp-avis-card">
           <span class="quote-mark" aria-hidden="true">&ldquo;</span>
-          <blockquote>Alban a su <em>nous mettre à l'aise dès le premier échange.</em> Il a parfaitement compris notre besoin, posé les bonnes questions, et traduit nos intentions en images sans jamais que nous ayons à expliquer deux fois.</blockquote>
+          <blockquote>Merci pour ton travail, pour m'avoir mise en valeur, mais surtout pour <em>m'avoir mise en confiance devant l'objectif.</em> Ce n'est pas évident d'être de l'autre côté, mais tu as su rendre ce moment simple et naturel.</blockquote>
+          <figcaption>
+            <span class="who">Cor'Serein</span>
+            <span class="role">Massages bien-être</span>
+          </figcaption>
         </figure>
 
         <figure class="corp-avis-card">
           <span class="quote-mark" aria-hidden="true">&ldquo;</span>
-          <blockquote>Une <em>qualité de production dingue&nbsp;!</em> — chaque détail est traité avec une exigence qui se ressent à l'écran. Nous n'attendions pas un tel rendu.</blockquote>
+          <blockquote>Nous avons collaboré avec Alban pour la réalisation d'une vidéo témoignage lors des journées d'intervention sur le loup et les équidés. Son professionnalisme, sa discrétion sur le terrain et sa capacité à retranscrire fidèlement l'ambiance et les échanges ont permis de créer une vidéo <em>à la fois authentique et de grande qualité.</em> Une expérience fluide et humaine, que nous recommandons sans hésitation.</blockquote>
+          <figcaption>
+            <span class="who">Maryline Jacon</span>
+            <span class="role">Filière Conseil Cheval AURA</span>
+          </figcaption>
         </figure>
 
       </div>
