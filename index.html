@@ -22,9 +22,11 @@
 <meta name="twitter:description" content="Production audiovisuelle haut de gamme. Films d'entreprise, brand films, captations sportives et événementielles.">
 <meta name="twitter:image" content="https://alban-production.fr/portrait.JPG">
 
-<!-- Favicon -->
-<link rel="icon" type="image/svg+xml" href="icone.svg">
-<link rel="apple-touch-icon" href="icone.svg">
+<!-- Favicon (version dark pour affichage sur fond clair — Google, onglets nav) -->
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="alternate icon" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
+<meta name="theme-color" content="#0a0a0b">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2240,6 +2242,24 @@ body {
   transform: scale(1.08) rotate(0deg) !important;
   z-index: 2;
 }
+/* Broadcasters — 3 logos en ligne centrée (override du layout oval) */
+.clients-scatter.broadcasters-row {
+  grid-template-columns: repeat(3, minmax(0, 220px)) !important;
+  justify-content: center;
+  gap: 3rem !important;
+  padding: 2.5rem !important;
+  max-width: 900px;
+}
+@media(max-width: 900px) {
+  .clients-scatter.broadcasters-row { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 1.5rem !important; padding: 2rem 1rem !important; }
+}
+.clients-scatter.broadcasters-row .logo { height: 60px; }
+.clients-scatter.broadcasters-row .logo:nth-child(1),
+.clients-scatter.broadcasters-row .logo:nth-child(2),
+.clients-scatter.broadcasters-row .logo:nth-child(3) {
+  grid-column: auto !important; grid-row: auto !important;
+}
+
 /* Oval layout: 4 / 6 / 6 / 6 / 4 on desktop (top + bottom rows centered) */
 @media(min-width: 901px) {
   /* Top row — 4 logos centered cols 2-5 */
@@ -3334,9 +3354,19 @@ body.sp-locked { overflow: hidden; }
     </div>
   </section>
 
+  <!-- Présent sur des productions pour -->
+  <section class="corp-clients corp-clients-grid broadcasters">
+    <div class="label">Présent sur des productions pour</div>
+    <div class="clients-scatter broadcasters-row">
+      <div class="logo wide"><img src="logos/netflix.png" alt="Netflix" loading="lazy"></div>
+      <div class="logo wide"><img src="logos/Amazon Prime Video.png" alt="Amazon Prime Video" loading="lazy"></div>
+      <div class="logo wide"><img src="logos/TF1.png" alt="TF1" loading="lazy"></div>
+    </div>
+  </section>
+
   <!-- Clients grid -->
   <section class="corp-clients corp-clients-grid">
-    <div class="label">Ils nous ont confié leur image</div>
+    <div class="label">Ils nous font confiance</div>
     <div class="clients-scatter">
       <div class="logo compact"><img src="logos/Logo_JL_Bourg_Basket_-_2017.svg.png" alt="JL Bourg Basket" loading="lazy"></div>
       <div class="logo compact"><img src="logos/Logo_Oyonnax_rugby_2018.svg.png" alt="Oyonnax Rugby" loading="lazy"></div>
@@ -3543,6 +3573,24 @@ body.sp-locked { overflow: hidden; }
   <section class="sport-projects" id="sport-showreel">
     <div class="sport-bento">
       <article class="sport-project proj-tall"
+               data-video="https://vimeo.com/1214223229"
+               data-video-label="Vimeo"
+               data-client="Electra Festival"
+               data-year="2025"
+               data-format="Aftermovie festival — co-réalisation avec Playfilm Production"
+               data-brief="Retransmettre l'énergie brute du festival et donner envie de venir sur la prochaine édition, à travers un aftermovie ultra-dynamique, rythmé et immersif."
+               data-challenges="Être au bon endroit au bon moment pour capturer les plus belles images du show. Tournage en équipe avec Playfilm Production pour couvrir l'intégralité de l'événement et ne rater aucun temps fort — public, artistes, coulisses, décors.">
+        <img src="https://vumbnail.com/1214223229_large.jpg" alt="Aftermovie Electra Festival" loading="lazy" onerror="this.onerror=null;this.src='https://vumbnail.com/1214223229.jpg'">
+        <div class="sport-project-content">
+          <div class="sport-project-meta">
+            <span class="accent">N° 01</span>
+          </div>
+          <h3 class="sport-project-title">Electra Festival</h3>
+          <p class="sport-project-sub">Aftermovie — co-réalisation Playfilm Production</p>
+        </div>
+      </article>
+
+      <article class="sport-project"
                data-video="https://vimeo.com/1136420360"
                data-video-label="Vimeo"
                data-client="Aésio Mutuelle"
@@ -3553,7 +3601,7 @@ body.sp-locked { overflow: hidden; }
         <img src="https://vumbnail.com/1136420360_large.jpg" alt="Matches Octobre Rose" loading="lazy" onerror="this.onerror=null;this.src='https://vumbnail.com/1136420360.jpg'">
         <div class="sport-project-content">
           <div class="sport-project-meta">
-            <span class="accent">N° 01</span>
+            <span class="accent">N° 02</span>
           </div>
           <h3 class="sport-project-title">Matches Octobre Rose</h3>
           <p class="sport-project-sub">Aésio Mutuelle — film promotionnel</p>
@@ -3571,28 +3619,10 @@ body.sp-locked { overflow: hidden; }
         <img src="https://vumbnail.com/1168488366_large.jpg" alt="All Star Perche" loading="lazy" onerror="this.onerror=null;this.src='https://vumbnail.com/1168488366.jpg'">
         <div class="sport-project-content">
           <div class="sport-project-meta">
-            <span class="accent">N° 02</span>
+            <span class="accent">N° 03</span>
           </div>
           <h3 class="sport-project-title">All Star Perche</h3>
           <p class="sport-project-sub">Captation — essence de l'événement</p>
-        </div>
-      </article>
-
-      <article class="sport-project"
-               data-video="https://vimeo.com/1185854673"
-               data-video-label="Vimeo"
-               data-client="Projet particulier"
-               data-year="2024"
-               data-format="Film moto — dynamique"
-               data-brief="Accompagner un passionné qui voulait de belles images pour immortaliser son univers moto — vitesse, mécanique et lumière."
-               data-challenges="Suivre la moto en mouvement avec des prises de vue nerveuses, jouer avec les contre-jours et garder une narration sensible malgré l'énergie brute du sujet.">
-        <img src="https://vumbnail.com/1185854673_large.jpg" alt="Film moto" loading="lazy" onerror="this.onerror=null;this.src='https://vumbnail.com/1185854673.jpg'">
-        <div class="sport-project-content">
-          <div class="sport-project-meta">
-            <span class="accent">N° 03</span>
-          </div>
-          <h3 class="sport-project-title">Ride — Projet Moto</h3>
-          <p class="sport-project-sub">Film personnel — dynamique moto</p>
         </div>
       </article>
     </div>
@@ -3661,9 +3691,19 @@ body.sp-locked { overflow: hidden; }
     </div>
   </section>
 
+  <!-- Présent sur des productions pour -->
+  <section class="sport-clients broadcasters" id="sport-broadcasters">
+    <div class="label">Présent sur des productions pour</div>
+    <div class="clients-scatter broadcasters-row">
+      <div class="logo wide"><img src="logos/netflix.png" alt="Netflix" loading="lazy"></div>
+      <div class="logo wide"><img src="logos/Amazon Prime Video.png" alt="Amazon Prime Video" loading="lazy"></div>
+      <div class="logo wide"><img src="logos/TF1.png" alt="TF1" loading="lazy"></div>
+    </div>
+  </section>
+
   <!-- Clients grid -->
   <section class="sport-clients" id="sport-clients">
-    <div class="label">Ils nous ont fait confiance sur le terrain</div>
+    <div class="label">Ils nous font confiance</div>
     <div class="clients-scatter">
       <div class="logo compact"><img src="logos/Logo_JL_Bourg_Basket_-_2017.svg.png" alt="JL Bourg Basket" loading="lazy"></div>
       <div class="logo compact"><img src="logos/Logo_Oyonnax_rugby_2018.svg.png" alt="Oyonnax Rugby" loading="lazy"></div>
