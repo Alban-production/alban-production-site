@@ -4532,14 +4532,13 @@ body.sp-locked { overflow: hidden; }
   const grain = document.getElementById('grain');
   const navBackLabel = document.getElementById('nav-back-label');
 
-  const CORP_LINKS = ['Showreel','Projets','Process','À propos','Contact'];
-  const SPORT_LINKS = ['Reel','Projets','Méthode','Clients','Avis','À propos','Contact'];
-  const CORP_IDS    = ['showreel-video','projets','process','__about','__contact'];
-  const SPORT_IDS   = ['sport-reel','sport-showreel','sport-process','sport-clients','sport-avis','__about','__contact'];
-  const ABOUT_LINKS   = ['Contact'];
-  const ABOUT_IDS     = ['__contact'];
-  const CONTACT_LINKS = ['À propos'];
-  const CONTACT_IDS   = ['__about'];
+  // Navigation UNIFIÉE : mêmes liens sur toutes les vues internes.
+  // - Pas de "Sport" / "Corporate" : le bouton switch à droite gère déjà la bascule d'univers.
+  // - Le lien de la page courante est masqué (inutile de pointer vers soi-même).
+  const NAV_ITEMS = [
+    { label: 'À propos', id: '__about',   view: 'about'   },
+    { label: 'Contact',  id: '__contact', view: 'contact' }
+  ];
   let currentView = 'landing';
 
   const navRight = document.getElementById('nav-right');
@@ -4561,27 +4560,21 @@ body.sp-locked { overflow: hidden; }
 
   function setNavLinks(kind) {
     navMiddle.innerHTML = '';
-    let labels, ids;
-    if (kind === 'corp')    { labels = CORP_LINKS;    ids = CORP_IDS; }
-    else if (kind === 'sport')   { labels = SPORT_LINKS;   ids = SPORT_IDS; }
-    else if (kind === 'about')   { labels = ABOUT_LINKS;   ids = ABOUT_IDS; }
-    else if (kind === 'contact') { labels = CONTACT_LINKS; ids = CONTACT_IDS; }
-    else return;
-    labels.forEach((l,i) => {
-      const a = document.createElement('a');
-      a.className = 'nav-link';
-      a.textContent = l;
-      if (ids[i] === '__about') {
+    if (!['corp','sport','about','contact'].includes(kind)) return;
+    NAV_ITEMS
+      .filter(item => item.view !== kind)   // masque le lien de la page courante
+      .forEach(item => {
+        const a = document.createElement('a');
+        a.className = 'nav-link';
+        a.textContent = item.label;
         a.href = '#';
-        a.addEventListener('click', (e) => { e.preventDefault(); goAbout(); });
-      } else if (ids[i] === '__contact') {
-        a.href = '#';
-        a.addEventListener('click', (e) => { e.preventDefault(); goContact(); });
-      } else {
-        a.href = '#' + ids[i];
-      }
-      navMiddle.appendChild(a);
-    });
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (item.id === '__about') goAbout();
+          else if (item.id === '__contact') goContact();
+        });
+        navMiddle.appendChild(a);
+      });
   }
 
   function switchUniverse() {
