@@ -59,3 +59,10 @@
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
 </IfModule>
+
+# ——— Sources de construction : versionnées mais jamais servies ———
+# (_src contient le fichier source et le script de generation ; les exposer
+#  creerait du contenu duplique pour les moteurs de recherche)
+RedirectMatch 404 ^/_src/
+RedirectMatch 404 ^/_originaux/
+RedirectMatch 404 ^/_pages/
