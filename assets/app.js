@@ -299,6 +299,15 @@
   })();
 
   // ——— Contact form → Formspree ———
+
+  /* Anti-spam sans captcha, en deux garde-fous complémentaires :
+     1. le champ piège « _gotcha », invisible, qu'un robot remplit et pas un humain ;
+     2. le délai de remplissage : un envoi en moins de trois secondes après
+        l'affichage de la page est le fait d'un script, pas d'une personne.
+     Aucun service tiers, aucune donnée supplémentaire collectée. */
+  const FORM_LOADED_AT = Date.now();
+  const DELAI_MINIMAL_MS = 3000;
+
   window.handleContactSubmit = async function(e) {
     e.preventDefault();
     const form = e.target;
@@ -306,6 +315,20 @@
     const note = form.querySelector('.form-note');
     const originalNoteText = note ? note.textContent : '';
     const originalBtnHTML = submitBtn ? submitBtn.innerHTML : '';
+
+    // Champ piège rempli : on s'arrête sans rien envoyer ni rien signaler,
+    // pour ne pas indiquer au robot ce qui l'a fait échouer.
+    const piege = form.querySelector('[name="_gotcha"]');
+    if (piege && piege.value.trim() !== '') return;
+
+    // Envoi trop rapide : on invite simplement à réessayer.
+    if (Date.now() - FORM_LOADED_AT < DELAI_MINIMAL_MS) {
+      if (note) {
+        note.textContent = 'Merci de patienter un instant avant d’envoyer votre message.';
+        note.style.color = '#c0392b';
+      }
+      return;
+    }
 
     // Garde-fou RGPD : pas d'envoi sans consentement explicite
     const consent = form.querySelector('#c-consent');

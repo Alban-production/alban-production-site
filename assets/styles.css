@@ -3680,6 +3680,17 @@ body[data-page="legal"] { background: var(--paper); }
 }
 .skip-link:focus { transform: translateY(0); }
 
+/* Champ piège anti-spam : sorti de l'écran plutôt que masqué en display:none,
+   qui est trop facile à détecter pour un robot. Personne ne doit le voir ni
+   l'atteindre au clavier (aria-hidden + tabindex="-1" sur le champ). */
+.form-hp {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px; height: 1px;
+  overflow: hidden;
+}
+
 /* Titre lu par les lecteurs d'écran et les moteurs, sans effet visuel :
    la page d'accueil affiche son titre sous forme de logo, non de texte. */
 .sr-only {

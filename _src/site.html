@@ -3021,6 +3021,15 @@ body.sp-locked { overflow: hidden; }
   color: var(--muted-light);
 }
 
+/* Champ piège anti-spam, hors écran (voir assets/styles.css) */
+.form-hp {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px; height: 1px;
+  overflow: hidden;
+}
+
 /* Titre restitué aux lecteurs d'écran sans effet visuel (voir assets/styles.css) */
 .sr-only {
   position: absolute;
@@ -4478,6 +4487,14 @@ body.sp-locked { overflow: hidden; }
           <div class="field">
             <label for="c-msg">Message <span class="req">(obligatoire)</span></label>
             <textarea id="c-msg" name="message" placeholder="Brief, dates, contraintes, univers, références… tout ce qui aide." required></textarea>
+          </div>
+
+          <!-- Champ piège anti-spam : invisible et hors du parcours clavier.
+               Un humain ne le remplit jamais ; un robot de formulaire, si.
+               Formspree écarte d'office toute soumission où « _gotcha » est rempli. -->
+          <div class="form-hp" aria-hidden="true">
+            <label for="c-website">Ne pas remplir ce champ</label>
+            <input id="c-website" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
           </div>
 
           <!-- Consentement RGPD — obligatoire, jamais pré-coché -->
