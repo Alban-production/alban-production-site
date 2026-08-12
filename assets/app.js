@@ -124,31 +124,93 @@
     return url;
   }
 
+  /* ——— Déclencheurs de chargement différé ———
+     Deux briques réutilisées plus bas : « quand la page a fini son premier
+     rendu » et « quand l'élément approche de l'écran ». Tout ce qui pèse et
+     qui n'est pas visible immédiatement passe par elles. */
+  function auRepos(action) {
+    const lancer = () => (window.requestIdleCallback
+      ? requestIdleCallback(action, { timeout: 2000 })
+      : setTimeout(action, 200));
+    if (document.readyState === 'complete') lancer();
+    else window.addEventListener('load', lancer, { once: true });
+  }
+
+  function aLApproche(elements, action, marge = '300px') {
+    if (!('IntersectionObserver' in window)) { elements.forEach(action); return; }
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        obs.unobserve(e.target);
+        action(e.target);
+      });
+    }, { rootMargin: marge });
+    elements.forEach(el => obs.observe(el));
+  }
+
   // Sync thumbnails with the official Vimeo thumbnail (oEmbed API)
   // Anytime the user updates a custom thumbnail on Vimeo, the site reflects it.
+  // L'appel part quand la vignette approche de l'écran, et non au chargement :
+  // sur la page Corporate cela évitait quatre requêtes vers Vimeo avant même
+  // que le visiteur ait vu la première section.
   function syncVimeoThumbnails() {
-    document.querySelectorAll('[data-video]').forEach(host => {
-      const raw = host.getAttribute('data-video');
-      if (!raw) return;
-      const m = raw.match(/vimeo\.com\/(?:video\/)?(\d+)/);
-      if (!m) return;
-      const id = m[1];
+    const hotes = [...document.querySelectorAll('[data-video]')].filter(h => {
+      const raw = h.getAttribute('data-video');
+      return raw && /vimeo\.com\/(?:video\/)?\d+/.test(raw)
+          && (h.tagName === 'IMG' || h.querySelector('img'));
+    });
+    aLApproche(hotes, (host) => {
+      const id = host.getAttribute('data-video').match(/vimeo\.com\/(?:video\/)?(\d+)/)[1];
       const img = host.tagName === 'IMG' ? host : host.querySelector('img');
-      if (!img) return;
-      // Fetch the latest thumbnail URL from Vimeo's oEmbed API
       fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${id}&width=1600`)
         .then(r => r.ok ? r.json() : null)
         .then(data => {
-          if (data && data.thumbnail_url) {
-            // Vimeo returns _640 or _1280 — strip suffix to get max-res
-            const maxUrl = data.thumbnail_url.replace(/_\d+x\d+(?=\.\w+($|\?))/, '');
-            img.src = maxUrl;
+          if (!data || !data.thumbnail_url) return;
+          // Vimeo returns _640 or _1280 — strip suffix to get max-res
+          const maxUrl = data.thumbnail_url.replace(/_\d+x\d+(?=\.\w+($|\?))/, '');
+          // Une vignette locale peut être servie via <picture> : les <source>
+          // l'emportent sur src, il faut donc les retirer pour que l'image
+          // fraîchement récupérée sur Vimeo s'affiche réellement.
+          const pic = img.parentElement;
+          if (pic && pic.tagName === 'PICTURE') {
+            pic.querySelectorAll('source').forEach(s => s.remove());
           }
+          img.src = maxUrl;
         })
         .catch(() => {/* fail silently → vumbnail fallback in src */});
     });
   }
   syncVimeoThumbnails();
+
+  /* ——— Vidéos d'arrière-plan des héros Sport et Corporate ———
+     Le lecteur Vimeo était présent dans le HTML : il se lançait donc en même
+     temps que la page, en concurrence avec les polices, le CSS et les images,
+     puis diffusait en boucle. Il est maintenant créé après le premier rendu,
+     et pas du tout si le visiteur a demandé à économiser ses données ou à
+     limiter les animations — le fond peint du hero suffit alors, l'habillage
+     du titre étant de toute façon posé par-dessus.
+     L'URL et l'identifiant du lecteur sont repris tels quels. */
+  function chargerVideosArrierePlan() {
+    const hotes = [...document.querySelectorAll('[data-hero-video]')];
+    if (!hotes.length) return;
+
+    const donneesReduites = window.matchMedia('(prefers-reduced-data: reduce)').matches
+      || (navigator.connection && navigator.connection.saveData === true);
+    const animationsReduites = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (donneesReduites || animationsReduites) return;
+
+    auRepos(() => aLApproche(hotes, (hote) => {
+      if (hote.querySelector('iframe')) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = hote.dataset.heroVideo;
+      iframe.title = hote.dataset.heroVideoTitle || 'Vidéo d’arrière-plan';
+      iframe.setAttribute('allow', 'autoplay; fullscreen');
+      iframe.setAttribute('tabindex', '-1');
+      iframe.setAttribute('aria-hidden', 'true');
+      hote.appendChild(iframe);
+    }, '0px'));
+  }
+  chargerVideosArrierePlan();
 
   document.querySelectorAll('[data-video]').forEach(host => {
     host.addEventListener('click', (e) => {

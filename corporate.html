@@ -105,9 +105,12 @@
 
   <!-- Hero -->
   <section class="corp-hero tex-paper title-tex-corp" id="showreel">
-    <div class="corp-hero-bg" aria-hidden="true">
-      <iframe src="https://player.vimeo.com/video/1186867489?background=1&autoplay=1&loop=1&muted=1&dnt=1" allow="autoplay; fullscreen" loading="lazy" title="Corporate background"></iframe>
-    </div>
+    <!-- Vidéo d'arrière-plan : le lecteur n'est créé qu'après le premier rendu,
+         et pas du tout si le visiteur demande à économiser les données ou les
+         animations. L'identifiant et les paramètres Vimeo sont inchangés. -->
+    <div class="corp-hero-bg" aria-hidden="true"
+         data-hero-video="https://player.vimeo.com/video/1186867489?background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;dnt=1"
+         data-hero-video-title="Corporate background"></div>
     <div>
       <h1 class="corp-h1 reveal">
         Plus qu'une vidéo,<br>
@@ -471,6 +474,6 @@
   </div>
 </div>
 
-<script src="/assets/app.js?v=aeeba955" defer></script>
+<script src="/assets/app.js?v=abff053b" defer></script>
 </body>
 </html>
