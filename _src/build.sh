@@ -262,6 +262,28 @@ done
 perl -0pi -e 's{<section class="split-side split-sport" onclick="goSport\(\)">(.*?)</section>}{<a class="split-side split-sport" href="/sport">$1</a>}gs;
               s{<section class="split-side split-corp" onclick="goCorporate\(\)">(.*?)</section>}{<a class="split-side split-corp" href="/corporate">$1</a>}gs' "$OUT/index.html"
 
+# ════════════════════════════════════════════════
+#  WebP : repli automatique
+# ════════════════════════════════════════════════
+# Tout <img> dont la source possède un jumeau .webp (produit par _src/webp.sh)
+# est enveloppé dans un <picture>. Le navigateur prend le WebP s'il sait le lire,
+# le fichier d'origine sinon. Rien à écrire à la main dans site.html : ajouter ou
+# retirer un .webp suffit à activer ou désactiver le repli.
+# Passe volontairement exécutée en dernier, après l'injection du pied de page.
+export PUB
+for f in "$OUT"/*.html; do
+  perl -0pi -e '
+    s{<img\s+([^>]*?)src="(/[^"]+)\.(jpe?g|png)"([^>]*?)>}{
+      my ($avant, $base, $ext, $apres) = ($1, $2, $3, $4);
+      $avant =~ s/\s+$//; $avant = " $avant" if length $avant;
+      my $img = qq{<img$avant src="$base.$ext"$apres>};
+      -f "$ENV{PUB}$base.webp"
+        ? qq{<picture><source srcset="$base.webp" type="image/webp">$img</picture>}
+        : $img;
+    }gie
+  ' "$f"
+done
+
 # ——— Contrôles finaux ———
 echo "Pages générées :"
 for f in "$OUT"/*.html; do
@@ -269,6 +291,8 @@ for f in "$OUT"/*.html; do
   mains=$(grep -c '<main' "$f" || true)
   onclicks=$(grep -c 'goSport()\|goCorporate()\|goAbout()\|goContact()\|goLanding()' "$f" || true)
   o=$(grep -o '<!--' "$f" | wc -l | tr -d ' '); c=$(grep -o '\-\->' "$f" | wc -l | tr -d ' ')
-  printf '  %-18s %5s Ko | <main>: %s | handlers obsolètes: %s | commentaires: %s/%s\n' \
-    "$n" "$(( $(stat -f%z "$f") / 1024 ))" "$mains" "$onclicks" "$o" "$c"
+  imgs=$(grep -o '<img' "$f" | wc -l | tr -d ' ')
+  webp=$(grep -o '<picture>' "$f" | wc -l | tr -d ' ')
+  printf '  %-18s %5s Ko | <main>: %s | handlers obsolètes: %s | commentaires: %s/%s | images: %s dont %s en WebP\n' \
+    "$n" "$(( $(stat -f%z "$f") / 1024 ))" "$mains" "$onclicks" "$o" "$c" "$imgs" "$webp"
 done
