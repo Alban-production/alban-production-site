@@ -308,12 +308,45 @@
   const FORM_LOADED_AT = Date.now();
   const DELAI_MINIMAL_MS = 3000;
 
+  /* ——— Zone d'état du formulaire ———
+     Un seul élément porte les messages (attente, erreur, succès). Il est déclaré
+     role="status" dans le HTML : tout changement de son texte est annoncé par les
+     lecteurs d'écran sans déplacer le focus.
+     Quand un champ précis est en cause, il est relié à ce message par
+     aria-describedby et signalé par aria-invalid, pour que l'erreur soit lue
+     au moment où l'on revient sur le champ. */
+  const STATUT_ID = 'form-status';
+
+  function relierErreur(champ, note) {
+    if (!champ || !note || !note.id) return;
+    champ.setAttribute('aria-invalid', 'true');
+    const decrit = (champ.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+    if (!decrit.includes(note.id)) {
+      champ.setAttribute('aria-describedby', decrit.concat(note.id).join(' '));
+    }
+  }
+
+  function delierErreur(champ, note) {
+    if (!champ || !note || !note.id) return;
+    champ.removeAttribute('aria-invalid');
+    const decrit = (champ.getAttribute('aria-describedby') || '')
+      .split(/\s+/).filter(id => id && id !== note.id);
+    if (decrit.length) champ.setAttribute('aria-describedby', decrit.join(' '));
+    else champ.removeAttribute('aria-describedby');
+  }
+
+  function afficherStatut(note, texte, couleur) {
+    if (!note) return;
+    note.textContent = texte;
+    note.style.color = couleur;
+  }
+
   window.handleContactSubmit = async function(e) {
     e.preventDefault();
     const form = e.target;
     const submitBtn = form.querySelector('button[type="submit"]');
-    const note = form.querySelector('.form-note');
-    const originalNoteText = note ? note.textContent : '';
+    const note = form.querySelector('#' + STATUT_ID) || form.querySelector('.form-note');
+    const consent = form.querySelector('#c-consent');
     const originalBtnHTML = submitBtn ? submitBtn.innerHTML : '';
 
     // Champ piège rempli : on s'arrête sans rien envoyer ni rien signaler,
@@ -323,23 +356,18 @@
 
     // Envoi trop rapide : on invite simplement à réessayer.
     if (Date.now() - FORM_LOADED_AT < DELAI_MINIMAL_MS) {
-      if (note) {
-        note.textContent = 'Merci de patienter un instant avant d’envoyer votre message.';
-        note.style.color = '#c0392b';
-      }
+      afficherStatut(note, 'Merci de patienter un instant avant d’envoyer votre message.', '#c0392b');
       return;
     }
 
     // Garde-fou RGPD : pas d'envoi sans consentement explicite
-    const consent = form.querySelector('#c-consent');
     if (consent && !consent.checked) {
-      if (note) {
-        note.textContent = 'Merci de cocher la case de consentement avant d’envoyer votre message.';
-        note.style.color = '#c0392b';
-      }
+      afficherStatut(note, 'Merci de cocher la case de consentement avant d’envoyer votre message.', '#c0392b');
+      relierErreur(consent, note);
       consent.focus();
       return;
     }
+    delierErreur(consent, note);
 
     if (submitBtn) {
       submitBtn.disabled = true;
@@ -356,10 +384,7 @@
       });
       if (res.ok) {
         form.reset();
-        if (note) {
-          note.textContent = '✓ Message envoyé — réponse sous 24h ouvrées';
-          note.style.color = 'var(--accent)';
-        }
+        afficherStatut(note, '✓ Message envoyé — réponse sous 24h ouvrées', 'var(--accent)');
         if (submitBtn) {
           submitBtn.innerHTML = 'Merci, à très vite !';
           submitBtn.style.opacity = '1';
@@ -368,10 +393,7 @@
         throw new Error('Échec envoi (' + res.status + ')');
       }
     } catch (err) {
-      if (note) {
-        note.textContent = '⚠ Une erreur est survenue. Réessaie ou écris à contact@alban-production.fr';
-        note.style.color = '#c0392b';
-      }
+      afficherStatut(note, '⚠ Une erreur est survenue. Réessaie ou écris à contact@alban-production.fr', '#c0392b');
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.style.opacity = '1';
