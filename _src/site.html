@@ -3195,9 +3195,13 @@ body.sp-locked { overflow: hidden; }
       </div>
     </div>
 
+    <!-- Bloc désactivé, conservé pour une vraie photo de tournage.
+         L'image de remplissage qui s'y trouvait venait de picsum.photos : bien
+         qu'invisible (display:none), le navigateur la téléchargeait à chaque
+         visite, ce qui transmettait l'adresse IP du visiteur à un service tiers.
+         [[À COMPLÉTER : photo de tournage + légende réelle]] -->
     <figure class="corp-hero-media reveal" hidden style="display:none;">
-      <img src="https://picsum.photos/seed/ap-editorial-hero/800/1000" alt="Tournage éditorial" width="800" height="1000">
-      <figcaption class="corp-hero-media-cap">Tournage — Croix-Rousse, 03/2024</figcaption>
+      <figcaption class="corp-hero-media-cap"></figcaption>
     </figure>
 
     <div class="scroll-hint">
