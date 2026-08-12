@@ -3657,3 +3657,45 @@ body[data-page="corporate"],
 body[data-page="about"],
 body[data-page="contact"],
 body[data-page="legal"] { background: var(--paper); }
+
+/* ═══════════════════════════════════════════════
+   ACCESSIBILITÉ
+═══════════════════════════════════════════════ */
+
+/* Lien d'évitement : invisible jusqu'à ce qu'il reçoive le focus au clavier */
+.skip-link {
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 300;
+  transform: translateY(-120%);
+  padding: 0.85rem 1.5rem;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.2s var(--ease-out);
+}
+.skip-link:focus { transform: translateY(0); }
+
+/* Focus toujours visible au clavier, dans les deux univers */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.split-side:focus-visible { outline-offset: -4px; }
+
+/* Les bandeaux défilants se figent si l'utilisateur limite les animations */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .corp-marquee-track { animation: none !important; transform: none !important; }
+  .grain, .grain::before { animation: none !important; }
+}

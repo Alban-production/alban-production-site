@@ -187,6 +187,7 @@
   // ——— Sport project modal ———
   (function () {
     const modal = document.getElementById('sp-modal');
+    let lastFocused = null;   // élément à re-focaliser à la fermeture
     if (!modal) return;
     const videoSlot = modal.querySelector('#sp-modal-video');
     const titleEl = modal.querySelector('#sp-modal-title');
@@ -216,13 +217,47 @@
       subEl.textContent = article.querySelector('.sport-project-sub')?.textContent?.trim() || '';
       const metaSpans = article.querySelectorAll('.sport-project-meta span');
       numEl.textContent = metaSpans[0]?.textContent?.trim() || '';
-      clientEl.textContent = article.getAttribute('data-client') || '—';
-      formatEl.textContent = article.getAttribute('data-format') || '—';
-      briefEl.textContent = article.getAttribute('data-brief') || '—';
-      challengesEl.textContent = article.getAttribute('data-challenges') || '—';
+      // Un champ vide masque sa ligne plutôt que d'afficher un tiret
+      fillRow(clientEl,     article.getAttribute('data-client'));
+      fillRow(formatEl,     article.getAttribute('data-format'));
+      fillRow(briefEl,      article.getAttribute('data-brief'));
+      fillRow(challengesEl, article.getAttribute('data-challenges'));
+
+      lastFocused = document.activeElement;
       modal.classList.add('is-open');
       modal.setAttribute('aria-hidden', 'false');
       document.body.classList.add('sp-locked');
+
+      // Le focus entre dans la modale et y reste tant qu'elle est ouverte
+      const closeBtn = modal.querySelector('.sp-modal-close');
+      if (closeBtn) closeBtn.focus();
+      document.addEventListener('keydown', trapFocus, true);
+    }
+
+    // Renseigne une valeur, ou masque la ligne entière si la donnée est absente
+    function fillRow(el, value) {
+      if (!el) return;
+      const row = el.closest('div');
+      const clean = (value || '').trim();
+      const empty = !clean || clean === '—';
+      if (row) row.hidden = empty;
+      el.textContent = empty ? '' : clean;
+    }
+
+    // Maintient la tabulation à l'intérieur de la modale
+    function trapFocus(e) {
+      if (e.key !== 'Tab' || !modal.classList.contains('is-open')) return;
+      const focusables = modal.querySelectorAll(
+        'button, [href], iframe, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last  = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus();
+      }
     }
 
     function closeModal() {
@@ -230,13 +265,30 @@
       modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('sp-locked');
       videoSlot.innerHTML = '';
+      document.removeEventListener('keydown', trapFocus, true);
+      // Le focus revient sur la carte d'où l'on vient
+      if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+      lastFocused = null;
     }
 
     document.querySelectorAll('.sport-project').forEach(article => {
+      // Les cartes sont des <article> : on les rend focalisables et activables
+      // au clavier, comme un bouton, puisqu'elles ouvrent une fenêtre de détail.
+      article.setAttribute('role', 'button');
+      article.setAttribute('tabindex', '0');
+      const titre = article.querySelector('.sport-project-title')?.textContent.trim();
+      if (titre) article.setAttribute('aria-label', 'Voir le détail du projet : ' + titre);
+
       article.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         openModal(article);
+      });
+      article.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openModal(article);
+        }
       });
     });
 
