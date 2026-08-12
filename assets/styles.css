@@ -3670,9 +3670,13 @@ body[data-page="legal"] { background: var(--paper); }
   transform: translateY(-120%);
   padding: 0.85rem 1.5rem;
   background: var(--accent);
-  color: #fff;
+  /* Texte encre plutôt que blanc : blanc sur l'orange de marque ne donne que
+     2,87:1, sous le minimum de 4,5:1 attendu pour un texte de cette taille.
+     L'encre monte à 6,9:1 sans toucher à la couleur d'accent. */
+  color: #111113;
   font-family: var(--font-mono);
   font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   text-decoration: none;
