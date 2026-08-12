@@ -255,6 +255,17 @@
     const originalNoteText = note ? note.textContent : '';
     const originalBtnHTML = submitBtn ? submitBtn.innerHTML : '';
 
+    // Garde-fou RGPD : pas d'envoi sans consentement explicite
+    const consent = form.querySelector('#c-consent');
+    if (consent && !consent.checked) {
+      if (note) {
+        note.textContent = 'Merci de cocher la case de consentement avant d’envoyer votre message.';
+        note.style.color = '#c0392b';
+      }
+      consent.focus();
+      return;
+    }
+
     if (submitBtn) {
       submitBtn.disabled = true;
       submitBtn.style.opacity = '0.65';
