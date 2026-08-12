@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact &amp; devis gratuit — Alban Production, Bourg-en-Bresse</title>
+<meta name="description" content="Parlons de votre projet vidéo. Devis gratuit sous 24 h ouvrées pour vos films d'entreprise, brand films et captations sportives à Bourg-en-Bresse et en Auvergne-Rhône-Alpes.">
+<meta name="author" content="Alban Dubois">
+<link rel="canonical" href="https://alban-production.fr/contact">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Alban Production">
+<meta property="og:title" content="Contact &amp; devis gratuit — Alban Production, Bourg-en-Bresse">
+<meta property="og:description" content="Parlons de votre projet vidéo. Devis gratuit sous 24 h ouvrées pour vos films d'entreprise, brand films et captations sportives à Bourg-en-Bresse et en Auvergne-Rhône-Alpes.">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="https://alban-production.fr/contact">
+<meta property="og:image" content="https://alban-production.fr/portrait.JPG">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Contact &amp; devis gratuit — Alban Production, Bourg-en-Bresse">
+<meta name="twitter:description" content="Parlons de votre projet vidéo. Devis gratuit sous 24 h ouvrées pour vos films d'entreprise, brand films et captations sportives à Bourg-en-Bresse et en Auvergne-Rhône-Alpes.">
+<meta name="twitter:image" content="https://alban-production.fr/portrait.JPG">
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="alternate icon" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/favicon.svg">
+<meta name="theme-color" content="#0a0a0b">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,500;1,600&family=Instrument+Serif:ital@0;1&family=Montserrat:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body data-page="contact">
+
+<div class="grain" id="grain"></div>
+
+<nav class="topnav" id="topnav" style="display:none;">
+  <div class="nav-left">
+    <a class="brand" href="/" aria-label="Accueil">
+      <img src="/icone.svg" alt="Alban Production" class="brand-logo">
+    </a>
+  </div>
+  <div class="nav-middle" id="nav-middle"></div>
+  <div class="nav-right" id="nav-right"></div>
+</nav>
+
+<main id="contact-view" class="view active tex-paper">
+  <div class="contact-wrap">
+    <header class="contact-header">
+      <div class="kicker">Contact</div>
+      <h2 class="contact-title">Parlons<br><em>de votre projet.</em></h2>
+      <p class="contact-lede">
+        Capturer l'instant, sublimer votre message : transformons vos projets en une expérience visuelle qui marque les esprits.
+      </p>
+    </header>
+
+    <div class="contact-grid">
+      <!-- Colonne GAUCHE · infos -->
+      <div class="pane-info">
+        <a href="mailto:contact@alban-production.fr" class="email-big" id="contact-email" style="scroll-margin-top:6rem;">contact@alban-production.fr</a>
+
+        <div id="contact-infos" style="margin-top:2.5rem;scroll-margin-top:6rem;">
+          <div class="contact-block">
+            <span class="lbl">Téléphone</span>
+            <a class="val" href="tel:+33769487926">07 69 48 79 26</a>
+          </div>
+          <div class="contact-block">
+            <span class="lbl">Sur RDV</span>
+            <span class="val">Lundi — Vendredi, 9h → 17h</span>
+          </div>
+          <div class="contact-block">
+            <span class="lbl">Réseaux</span>
+            <span class="val">
+              <a href="https://www.instagram.com/alban.production/" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.linkedin.com/in/alban-production" target="_blank" rel="noopener">LinkedIn</a>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne DROITE · formulaire -->
+      <div class="pane-form">
+        <div class="form-intro">Devis gratuit sous 24h</div>
+
+        <form class="form" id="contact-form" style="scroll-margin-top:6rem;"
+              action="https://formspree.io/f/mgodryzd"
+              method="POST"
+              onsubmit="handleContactSubmit(event)">
+          <div class="field">
+            <label for="c-name">Nom &amp; prénom <span class="req">(obligatoire)</span></label>
+            <input id="c-name" name="name" type="text" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="c-email">Email <span class="req">(obligatoire)</span></label>
+            <input id="c-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="c-subject">Objet <span class="req">(obligatoire)</span></label>
+            <input id="c-subject" name="subject" type="text" required>
+          </div>
+          <div class="field">
+            <label for="c-budget">Budget indicatif <span class="req">(obligatoire)</span></label>
+            <select id="c-budget" name="budget" required>
+              <option value="">Sélectionner une fourchette</option>
+              <option value="1-5k">1k — 5k €</option>
+              <option value="5-10k">5k — 10k €</option>
+              <option value="10-20k">10k — 20k €</option>
+              <option value="20k+">20k+ €</option>
+              <option value="unknown">Je ne sais pas encore</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="c-msg">Message <span class="req">(obligatoire)</span></label>
+            <textarea id="c-msg" name="message" placeholder="Brief, dates, contraintes, univers, références… tout ce qui aide." required></textarea>
+          </div>
+          <button class="form-cta" type="submit">
+            Envoyer le brief
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <span class="form-note">Réponse sous 24h ouvrées</span>
+        </form>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div class="site-footer-top">
+        <div class="site-footer-brand">
+          <img src="/icone.svg" alt="Alban Production">
+          <p class="tagline">Production audiovisuelle haut de gamme —</p>
+        </div>
+        <div class="site-footer-cols">
+          <div class="site-footer-col">
+            <h4>Réseaux</h4>
+            <a href="https://www.instagram.com/alban.production/" target="_blank" rel="noopener">Instagram</a>
+            <a href="https://www.linkedin.com/in/alban-production" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+          <div class="site-footer-col">
+            <h4>Contact</h4>
+            <a href="mailto:contact@alban-production.fr">contact@alban-production.fr</a>
+            <a href="tel:+33769487926">07 69 48 79 26</a>
+          </div>
+          <div class="site-footer-col">
+            <h4>Adresse</h4>
+            <span class="line">Jasseron</span>
+            <span class="line">01250 France</span>
+          </div>
+        </div>
+      </div>
+      <div class="site-footer-bottom">
+        <span>© 2026 Alban Production</span>
+        <span>All rights reserved</span>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<!-- Sport project modal (outside transformed mains so position:fixed works) -->
+<div class="sp-modal" id="sp-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="sp-modal-title">
+  <div class="sp-modal-backdrop" data-sp-close></div>
+  <div class="sp-modal-panel">
+    <button class="sp-modal-close" type="button" aria-label="Fermer" data-sp-close>×</button>
+    <div class="sp-modal-video" id="sp-modal-video"></div>
+    <aside class="sp-modal-info">
+      <div class="sp-modal-eyebrow"><span class="accent" id="sp-modal-num">N° 01</span></div>
+      <h3 class="sp-modal-title" id="sp-modal-title">—</h3>
+      <p class="sp-modal-sub" id="sp-modal-sub">—</p>
+      <dl class="sp-modal-list">
+        <div><dt>Client</dt><dd id="sp-modal-client">—</dd></div>
+        <div><dt>Format</dt><dd id="sp-modal-format">—</dd></div>
+        <div><dt>Pourquoi</dt><dd id="sp-modal-brief">—</dd></div>
+        <div><dt>Défis</dt><dd id="sp-modal-challenges">—</dd></div>
+      </dl>
+    </aside>
+  </div>
+</div>
+
+<script src="/assets/app.js" defer></script>
+</body>
+</html>
