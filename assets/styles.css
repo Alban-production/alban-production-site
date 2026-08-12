@@ -3290,13 +3290,13 @@ body.sp-locked { overflow: hidden; }
     margin-bottom: 1.5rem;
   }
   #contact-view .kicker::before { content: ''; width: 2rem; height: 1px; background: var(--accent); }
-  #contact-view h2.contact-title {
+  #contact-view .contact-title {
     font-family: var(--font-corp); font-weight: 600;
     font-size: clamp(2.75rem, 6vw, 5rem);
     line-height: 1; letter-spacing: -0.035em;
     color: var(--ink);
   }
-  #contact-view h2.contact-title em {
+  #contact-view .contact-title em {
     font-family: var(--font-serif-accent); font-weight: 400; font-style: italic;
     color: var(--muted-light);
   }
@@ -3679,6 +3679,19 @@ body[data-page="legal"] { background: var(--paper); }
   transition: transform 0.2s var(--ease-out);
 }
 .skip-link:focus { transform: translateY(0); }
+
+/* Titre lu par les lecteurs d'écran et les moteurs, sans effet visuel :
+   la page d'accueil affiche son titre sous forme de logo, non de texte. */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
 
 /* Focus toujours visible au clavier, dans les deux univers */
 a:focus-visible,

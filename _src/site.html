@@ -3020,6 +3020,18 @@ body.sp-locked { overflow: hidden; }
 .sp-modal.is-corp .sp-modal-video.is-empty::after {
   color: var(--muted-light);
 }
+
+/* Titre restitué aux lecteurs d'écran sans effet visuel (voir assets/styles.css) */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
 </style>
 </head>
 <body>
@@ -3044,6 +3056,10 @@ body.sp-locked { overflow: hidden; }
      LANDING
 ═══════════════════════════════════════════════ -->
 <main id="landing" class="view active">
+
+  <!-- Titre de la page : affiché sous forme de logo, donc restitué ici en texte
+       pour les lecteurs d'écran et les moteurs de recherche (aucun effet visuel) -->
+  <h1 class="sr-only">Alban Production — production audiovisuelle à Bourg-en-Bresse</h1>
 
   <!-- Meta bar top -->
   <div class="meta-bar">
@@ -4276,13 +4292,13 @@ body.sp-locked { overflow: hidden; }
     margin-bottom: 1.5rem;
   }
   #contact-view .kicker::before { content: ''; width: 2rem; height: 1px; background: var(--accent); }
-  #contact-view h2.contact-title {
+  #contact-view .contact-title {
     font-family: var(--font-corp); font-weight: 600;
     font-size: clamp(2.75rem, 6vw, 5rem);
     line-height: 1; letter-spacing: -0.035em;
     color: var(--ink);
   }
-  #contact-view h2.contact-title em {
+  #contact-view .contact-title em {
     font-family: var(--font-serif-accent); font-weight: 400; font-style: italic;
     color: var(--muted-light);
   }
@@ -4399,7 +4415,7 @@ body.sp-locked { overflow: hidden; }
   <div class="contact-wrap">
     <header class="contact-header">
       <div class="kicker">Contact</div>
-      <h2 class="contact-title">Parlons<br><em>de votre projet.</em></h2>
+      <h1 class="contact-title">Parlons<br><em>de votre projet.</em></h1>
       <p class="contact-lede">
         Capturer l'instant, sublimer votre message : transformons vos projets en une expérience visuelle qui marque les esprits.
       </p>
