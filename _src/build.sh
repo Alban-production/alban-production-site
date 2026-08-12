@@ -44,11 +44,76 @@ for f in /tmp/frag-*.html /tmp/main-*.html; do
   if [ "$o" -ne "$c" ]; then echo "ERREUR: commentaire non fermé dans $f ($o ouverts / $c fermés)"; exit 1; fi
 done
 
-# make_page  fichier  data-page  title  description  canonical  main  og-image  [noindex]
+# ════════════════════════════════════════════════
+#  Données structurées (JSON-LD)
+# ════════════════════════════════════════════════
+# Toutes les valeurs proviennent des mentions légales et de la page contact :
+# aucune donnée inventée. Ne rien ajouter ici sans source vérifiable.
+read -r -d '' LD_BUSINESS <<'LD' || true
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "@id": "https://alban-production.fr/#alban-production",
+  "name": "Alban Production",
+  "description": "Production audiovisuelle haut de gamme à Bourg-en-Bresse : films d'entreprise, brand films, captations sportives et événementielles.",
+  "url": "https://alban-production.fr/",
+  "image": "https://alban-production.fr/og-image.jpg",
+  "logo": "https://alban-production.fr/icone.svg",
+  "email": "contact@alban-production.fr",
+  "telephone": "+33769487926",
+  "vatID": "FR01921617528",
+  "taxID": "92161752800028",
+  "founder": { "@type": "Person", "name": "Alban Dubois", "jobTitle": "Réalisateur et chef opérateur" },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Jasseron",
+    "postalCode": "01250",
+    "addressRegion": "Auvergne-Rhône-Alpes",
+    "addressCountry": "FR"
+  },
+  "areaServed": [
+    { "@type": "AdministrativeArea", "name": "Auvergne-Rhône-Alpes" },
+    { "@type": "Country", "name": "France" }
+  ],
+  "openingHoursSpecification": [{
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    "opens": "09:00",
+    "closes": "17:00"
+  }],
+  "sameAs": [
+    "https://www.instagram.com/alban.production/",
+    "https://www.linkedin.com/in/alban-production"
+  ],
+  "makesOffer": [
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Film d'entreprise" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Brand film" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Captation sportive" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Aftermovie événementiel" } }
+  ]
+}
+LD
+
+# fil_ariane <libellé> <chemin>  →  BreadcrumbList « Accueil › page courante »
+fil_ariane () {
+  cat <<LD
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://alban-production.fr/" },
+    { "@type": "ListItem", "position": 2, "name": "$1", "item": "https://alban-production.fr$2" }
+  ]
+}
+LD
+}
+
+# make_page  fichier  data-page  title  description  canonical  main  og-image  [noindex]  [fil d'ariane]
 # Le 8e argument, s'il vaut "noindex", supprime le canonical et demande aux moteurs
 # de ne pas indexer la page (utilisé pour la 404, qui n'a pas d'URL propre).
+# Le 9e, s'il est renseigné, ajoute un fil d'Ariane structuré sous ce libellé.
 make_page () {
-  local FILE="$1" PAGE="$2" TITLE="$3" DESC="$4" CANON="$5" MAIN="$6" OGIMG="$7" NOINDEX="$8"
+  local FILE="$1" PAGE="$2" TITLE="$3" DESC="$4" CANON="$5" MAIN="$6" OGIMG="$7" NOINDEX="$8" CRUMB="$9"
   local CANON_TAG="<link rel=\"canonical\" href=\"https://alban-production.fr${CANON}\">"
   [ "$NOINDEX" = "noindex" ] && CANON_TAG='<meta name="robots" content="noindex, follow">'
   {
@@ -85,6 +150,17 @@ ${CANON_TAG}
 <link rel="preload" href="/assets/fonts/montserrat-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts.css?v=${V_FONTS}">
 <link rel="stylesheet" href="/assets/styles.css?v=${V_CSS}">
+
+<script type="application/ld+json">
+${LD_BUSINESS}
+</script>
+HEAD
+    if [ -n "$CRUMB" ]; then
+      printf '<script type="application/ld+json">\n'
+      fil_ariane "$CRUMB" "$CANON"
+      printf '</script>\n'
+    fi
+    cat <<HEAD
 </head>
 <body data-page="${PAGE}">
 <a class="skip-link" href="#contenu">Aller au contenu principal</a>
@@ -109,32 +185,32 @@ make_page "index.html" "landing" \
 make_page "sport.html" "sport" \
   "Vidéaste sport &amp; événementiel — Bourg-en-Bresse | Alban Production" \
   "Captations sportives et événementielles à Bourg-en-Bresse et en Auvergne-Rhône-Alpes. Aftermovies, films de club, contenus réseaux sociaux : une écriture cinématique au service de l'intensité du sport." \
-  "/sport" "/tmp/main-sport.html" "og-image.jpg"
+  "/sport" "/tmp/main-sport.html" "og-image.jpg" "" "Sport & événements"
 
 make_page "corporate.html" "corporate" \
   "Film d'entreprise &amp; brand film — Bourg-en-Bresse | Alban Production" \
   "Films d'entreprise, brand films et interviews à Bourg-en-Bresse (Ain). Une production audiovisuelle haut de gamme pour mettre en valeur votre savoir-faire, votre identité et votre message." \
-  "/corporate" "/tmp/main-corporate.html" "og-image.jpg"
+  "/corporate" "/tmp/main-corporate.html" "og-image.jpg" "" "Corporate & business"
 
 make_page "a-propos.html" "about" \
   "À propos — Alban Dubois, réalisateur &amp; chef opérateur | Alban Production" \
   "Alban Dubois, fondateur d'Alban Production. Sportif de haut niveau devenu réalisateur : une signature visuelle cinématique au service du sport et des entreprises, depuis Bourg-en-Bresse." \
-  "/a-propos" "/tmp/main-about.html" "og-image.jpg"
+  "/a-propos" "/tmp/main-about.html" "og-image.jpg" "" "À propos"
 
 make_page "contact.html" "contact" \
   "Contact &amp; devis gratuit — Alban Production, Bourg-en-Bresse" \
   "Parlons de votre projet vidéo. Devis gratuit sous 24 h ouvrées pour vos films d'entreprise, brand films et captations sportives à Bourg-en-Bresse et en Auvergne-Rhône-Alpes." \
-  "/contact" "/tmp/main-contact.html" "og-image.jpg"
+  "/contact" "/tmp/main-contact.html" "og-image.jpg" "" "Contact"
 
 make_page "mentions-legales.html" "legal" \
   "Mentions légales — Alban Production" \
   "Mentions légales du site Alban Production : éditeur, directeur de publication, hébergeur et propriété intellectuelle." \
-  "/mentions-legales" "$PUB/_src/main-mentions.html" "og-image.jpg"
+  "/mentions-legales" "$PUB/_src/main-mentions.html" "og-image.jpg" "" "Mentions légales"
 
 make_page "politique-de-confidentialite.html" "legal" \
   "Politique de confidentialité — Alban Production" \
   "Comment vos données personnelles sont collectées, utilisées et protégées sur le site Alban Production, conformément au RGPD." \
-  "/politique-de-confidentialite" "$PUB/_src/main-confidentialite.html" "og-image.jpg"
+  "/politique-de-confidentialite" "$PUB/_src/main-confidentialite.html" "og-image.jpg" "" "Politique de confidentialité"
 
 make_page "404.html" "legal" \
   "Page introuvable — Alban Production" \
