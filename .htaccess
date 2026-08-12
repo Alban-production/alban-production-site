@@ -33,14 +33,29 @@
 </IfModule>
 
 # ——— Cache navigateur ———
+# Les CSS et JS sont appelés avec une empreinte de contenu (?v=…) : on peut donc
+# les mettre en cache longtemps, une modification changeant automatiquement l'URL.
+# Le HTML, lui, ne doit jamais être servi depuis le cache, sinon les mises à jour
+# du site restent invisibles pour les visiteurs déjà venus.
 <IfModule mod_expires.c>
   ExpiresActive On
-  ExpiresByType text/css               "access plus 1 month"
-  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType text/css               "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
   ExpiresByType image/jpeg             "access plus 1 year"
   ExpiresByType image/png              "access plus 1 year"
   ExpiresByType image/webp             "access plus 1 year"
   ExpiresByType image/svg+xml          "access plus 1 year"
   ExpiresByType font/woff2             "access plus 1 year"
-  ExpiresByType text/html              "access plus 1 hour"
+  ExpiresByType text/html              "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Le HTML est systématiquement revalidé auprès du serveur
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  # Les assets versionnés sont immuables
+  <FilesMatch "\.(css|js|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
 </IfModule>

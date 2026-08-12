@@ -3650,3 +3650,10 @@ a.nav-back { display: inline-flex; align-items: center; gap: 0.5rem; }
   text-underline-offset: 2px;
 }
 #contact-view .field-consent .consent-help a:hover { color: var(--accent); }
+
+/* Fond de page cohérent dès le premier rendu (évite un flash sombre
+   sur les pages claires avant que la mise en page ne s'applique) */
+body[data-page="corporate"],
+body[data-page="about"],
+body[data-page="contact"],
+body[data-page="legal"] { background: var(--paper); }
