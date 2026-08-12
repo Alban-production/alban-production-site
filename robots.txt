@@ -1,0 +1,11 @@
+# Alban Production — https://alban-production.fr
+
+User-agent: *
+Allow: /
+
+# Sources de construction et originaux : jamais indexés
+Disallow: /_src/
+Disallow: /_originaux/
+Disallow: /_pages/
+
+Sitemap: https://alban-production.fr/sitemap.xml
