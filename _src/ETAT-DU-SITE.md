@@ -40,6 +40,7 @@ Fragments séparés dans `public/_src/` :
 | `main-confidentialite.html` | Contenu de la politique de confidentialité |
 | `main-404.html` | Contenu de la page 404 |
 | `build.sh` | Script de génération |
+| `webp.sh` | Génération des versions WebP des images |
 
 Fichiers statiques à la racine de `public/`, écrits à la main et copiés tels
 quels : `robots.txt`, `sitemap.xml`, `.htaccess`.
@@ -59,6 +60,26 @@ gestionnaires JavaScript en vrais liens, et écrit le résultat dans
 Le bloc JSON-LD `ProfessionalService` est défini une seule fois en tête de
 `build.sh` : **toutes ses valeurs proviennent des mentions légales et de la page
 contact**. Ne rien y ajouter sans source vérifiable.
+
+Dernière étape du script : tout `<img>` dont la source possède un jumeau `.webp`
+est enveloppé dans un `<picture>`. Rien à écrire à la main — poser ou retirer un
+fichier `.webp` suffit à activer ou désactiver le repli.
+
+### Régénérer les WebP
+
+```bash
+bash ~/Documents/Claude/public/_src/webp.sh   # puis relancer build.sh
+```
+
+Le script ne traite que les images réellement affichées, listées depuis les
+sources HTML : la racine de `public/` contient aussi de vieux originaux
+(`portrait.JPG`, `Sport.jpeg`…) qui ne sont pas déployés. Il essaie chaque image
+avec et sans perte, garde la plus légère, et **écarte tout gain inférieur à 10 %**
+pour ne pas multiplier les fichiers sans raison. `og-image.jpg` est exclue : les
+robots d'aperçu des réseaux sociaux ne lisent pas tous le WebP.
+
+Nécessite `cwebp` : `brew install webp` (installé le 12 août 2026, avec
+`libtiff` qui lui manquait).
 
 Il affiche un tableau de contrôle : nombre de `<main>`, gestionnaires obsolètes
 restants, équilibre des commentaires HTML. **Tout écart signale un problème.**
@@ -167,15 +188,44 @@ consentement, 10 Mo d'images, aucune donnée structurée.
   de marque, au lieu de blanc)
 - Audit automatisé des contrastes sur les 8 pages : résultats en § 5
 
+### Phase 2.2 — poids des pages
+- **Images en WebP** : 1 940 Ko → 592 Ko, soit **−69 %** sur les images
+  déployées. Repli automatique en `<picture>` produit par le build : les
+  navigateurs qui ne lisent pas le WebP reçoivent toujours le JPEG ou le PNG.
+  Un seul logo écarté, `fce-france-ain.png`, dont le gain n'atteignait pas 10 %.
+- **Vidéos d'arrière-plan Sport et Corporate** : le lecteur Vimeo était écrit en
+  dur dans le HTML et démarrait avec la page. Il est désormais créé après le
+  premier rendu, et **pas du tout** si le visiteur a demandé
+  `prefers-reduced-data`, `prefers-reduced-motion` ou activé le mode économie de
+  données. **URL et identifiant de lecteur repris à l'octet près.**
+- **Vignettes Vimeo** : les appels à l'API oEmbed partaient tous au chargement
+  (quatre sur la page Corporate). Ils partent maintenant quand la vignette
+  approche de l'écran — un seul avant le premier écran.
+- **Image de remplissage retirée** : le hero corporate contenait une photo
+  `picsum.photos` dans un bloc masqué. Invisible, mais téléchargée à chaque
+  visite : le navigateur récupère les images en `display:none`. C'était un
+  transfert d'IP vers un service tiers, du même ordre que les polices Google
+  supprimées en phase 1. Le bloc est conservé, vide, pour une vraie photo.
+
 ---
 
 ## 5. Ce qui reste à faire
 
-### 2.2 — vidéos Vimeo en arrière-plan
-Deux lecteurs se lancent en autoplay sur les pages Sport et Corporate.
-Mesurer leur impact sur le premier affichage et le volume mobile. Si l'impact
-est net : chargement différé après le premier rendu, image d'attente, et
-désactivation si `prefers-reduced-data` ou `prefers-reduced-motion`.
+### 2.2 — image d'attente des héros
+Quand la vidéo ne se charge pas (économie de données, animations réduites,
+Vimeo bloqué), le hero affiche son fond peint : sombre côté Sport, papier côté
+Corporate. C'est cohérent — l'habillage du titre est de toute façon posé
+par-dessus — mais une vraie image d'attente serait plus riche.
+Il faut pour cela **un export local d'une image des deux vidéos**
+— [[À COMPLÉTER : deux images fixes, hero Sport et hero Corporate]]. Ne pas la
+tirer d'un service tiers : cela réintroduirait la requête que le chargement
+différé vient d'éviter.
+
+**Ce qui n'a pas pu être mesuré** : le volume réellement diffusé par les
+lecteurs Vimeo. Le contenu d'une iframe d'un autre domaine est invisible aux
+outils de mesure de la page, et Vimeo ne renvoie pas d'en-tête d'autorisation
+de mesure. Ce qui est établi : sur le site en ligne, sept requêtes vers des
+domaines Vimeo partaient avant le premier écran ; il n'en reste qu'une.
 
 ### 2.3 — contrastes : ce qui dépend des couleurs de marque
 L'audit a été mené sur les 8 pages, en calculant le ratio réel de chaque texte
@@ -213,10 +263,11 @@ vérification visuelle faite, ils restent lisibles grâce au dégradé de surimp
   (le compte Formspree pointait auparavant vers une adresse Gmail). Test non
   effectué ici : il enverrait un vrai message au client.
 
-### Décision en attente
-**Conversion WebP** : gain estimé de 600 Ko sur les 2,2 Mo restants. Nécessite
-d'installer `cwebp` (`sips`, seul outil présent sur la machine, lit le WebP mais
-ne l'écrit pas). Le client n'a pas encore tranché.
+### Contenus manquants
+- **Photo du hero corporate** : le bloc existe, masqué et vide, en attente d'une
+  vraie photo de tournage et de sa légende.
+- **Images d'attente des vidéos de fond** (voir 2.2).
+- **Dates de publication des vidéos Vimeo** (voir 2.4).
 
 ---
 
@@ -253,6 +304,16 @@ balise, chercher l'ancienne dans `assets/styles.css` **et** dans le `<style>` de
 **Tester le formulaire sans rien envoyer.** Neutraliser `window.fetch` dans la
 console avant d'appeler `handleContactSubmit` : les garde-fous se vérifient sans
 qu'un message parte réellement chez le client.
+
+**Un `<source>` l'emporte sur `img.src`.** L'enveloppe `<picture>` du WebP a
+failli neutraliser la synchronisation des vignettes Vimeo : le script réécrivait
+bien `img.src`, mais le navigateur continuait d'afficher le `<source>`.
+`syncVimeoThumbnails()` retire donc les `<source>` avant de poser la nouvelle
+image. À garder en tête pour toute image locale pilotée par JavaScript.
+
+**Une image en `display:none` est quand même téléchargée.** Le bloc masqué du
+hero corporate appelait picsum.photos à chaque visite. Masquer ne suffit pas :
+pour qu'une requête ne parte pas, il faut retirer l'attribut `src`.
 
 ---
 
