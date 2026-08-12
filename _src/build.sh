@@ -44,9 +44,13 @@ for f in /tmp/frag-*.html /tmp/main-*.html; do
   if [ "$o" -ne "$c" ]; then echo "ERREUR: commentaire non fermé dans $f ($o ouverts / $c fermés)"; exit 1; fi
 done
 
-# make_page  fichier  data-page  title  description  canonical  main  og-image
+# make_page  fichier  data-page  title  description  canonical  main  og-image  [noindex]
+# Le 8e argument, s'il vaut "noindex", supprime le canonical et demande aux moteurs
+# de ne pas indexer la page (utilisé pour la 404, qui n'a pas d'URL propre).
 make_page () {
-  local FILE="$1" PAGE="$2" TITLE="$3" DESC="$4" CANON="$5" MAIN="$6" OGIMG="$7"
+  local FILE="$1" PAGE="$2" TITLE="$3" DESC="$4" CANON="$5" MAIN="$6" OGIMG="$7" NOINDEX="$8"
+  local CANON_TAG="<link rel=\"canonical\" href=\"https://alban-production.fr${CANON}\">"
+  [ "$NOINDEX" = "noindex" ] && CANON_TAG='<meta name="robots" content="noindex, follow">'
   {
     cat <<HEAD
 <!DOCTYPE html>
@@ -57,7 +61,7 @@ make_page () {
 <title>${TITLE}</title>
 <meta name="description" content="${DESC}">
 <meta name="author" content="Alban Dubois">
-<link rel="canonical" href="https://alban-production.fr${CANON}">
+${CANON_TAG}
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Alban Production">
@@ -131,6 +135,11 @@ make_page "politique-de-confidentialite.html" "legal" \
   "Politique de confidentialité — Alban Production" \
   "Comment vos données personnelles sont collectées, utilisées et protégées sur le site Alban Production, conformément au RGPD." \
   "/politique-de-confidentialite" "$PUB/_src/main-confidentialite.html" "og-image.jpg"
+
+make_page "404.html" "legal" \
+  "Page introuvable — Alban Production" \
+  "Cette page n'existe pas ou a été déplacée. Retrouvez l'accueil, les univers Sport et Corporate, ou contactez Alban Production." \
+  "/404" "$PUB/_src/main-404.html" "og-image.jpg" "noindex"
 
 # ════════════════════════════════════════════════
 #  Post-traitement : liens réels + chemins absolus

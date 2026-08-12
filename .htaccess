@@ -22,8 +22,7 @@
 </IfModule>
 
 # ——— Page 404 personnalisée ———
-# (à activer en même temps que la création de /404.html — phase 2)
-# ErrorDocument 404 /404.html
+ErrorDocument 404 /404.html
 
 # ——— Compression ———
 <IfModule mod_deflate.c>
