@@ -41,6 +41,7 @@ Fragments séparés dans `public/_src/` :
 | `main-404.html` | Contenu de la page 404 |
 | `build.sh` | Script de génération |
 | `webp.sh` | Génération des versions WebP des images |
+| `vignettes.sh` | Récupération des vignettes Vimeo, hébergées en local |
 
 Fichiers statiques à la racine de `public/`, écrits à la main et copiés tels
 quels : `robots.txt`, `sitemap.xml`, `.htaccess`.
@@ -98,14 +99,17 @@ for f in index sport corporate a-propos contact mentions-legales politique-de-co
 done
 cp assets/styles.css assets/app.js assets/fonts.css "$DST/assets/"
 cp robots.txt sitemap.xml .htaccess "$DST/"
+cp vignettes/* "$DST/vignettes/"
 cd "$DST" && git add -A && git commit -m "…" && git push
 ```
 
 Hostinger récupère automatiquement chaque push (quelques secondes).
 
-Le push nécessite un jeton GitHub à créer sur
-<https://github.com/settings/tokens/new> (portée `repo`, expiration 1 jour),
-à révoquer après usage.
+**Le push ne demande plus rien depuis le 13 août 2026** : le jeton GitHub est
+enregistré dans le trousseau macOS (`credential.helper = osxkeychain`). Ne plus
+créer de jeton jetable à chaque déploiement, et **ne jamais coller un jeton dans
+une conversation** — s'il expire, le réenregistrer en lançant `git push` dans un
+terminal et en collant le nouveau jeton à l'invite `Password`.
 
 ### Aperçu local
 
@@ -196,6 +200,25 @@ consentement, 10 Mo d'images, aucune donnée structurée.
   de marque, au lieu de blanc)
 - Audit automatisé des contrastes sur les 8 pages : résultats en § 5
 
+### Phase 3 — dernières dépendances tierces (13 août 2026)
+- **vumbnail.com supprimé.** Les vignettes des projets venaient de ce service
+  tiers, distinct de Vimeo, appelé 4 fois par page. Il recevait l'adresse IP de
+  chaque visiteur **sans figurer dans la politique de confidentialité**, et
+  constituait un point de panne pour l'affichage des projets. Les vignettes
+  officielles sont désormais hébergées dans `public/vignettes/`, récupérées par
+  `_src/vignettes.sh`. La synchronisation à l'exécution (API oEmbed de Vimeo,
+  appelée depuis le navigateur du visiteur) a été retirée d'`app.js` : elle
+  faisait double emploi et rappelait un tiers.
+  **Contrepartie assumée** : changer une vignette sur Vimeo ne se reflète plus
+  tout seul. Relancer `vignettes.sh`, puis `webp.sh` et `build.sh`.
+  Résultat vérifié en ligne : une page de projet ne contacte plus que
+  `player.vimeo.com`, seul tiers déclaré dans la politique.
+- **En-têtes de sécurité** posés dans `.htaccess` : `X-Content-Type-Options`,
+  `Referrer-Policy` (l'URL complète des pages n'est plus transmise aux tiers),
+  `Permissions-Policy`, `X-Frame-Options`, `Strict-Transport-Security`.
+  Pas de CSP stricte : le site contient des styles et gestionnaires en ligne,
+  elle casserait l'affichage. Chantier à part entière si besoin.
+
 ### Phase 2.2 — poids des pages
 - **Images en WebP** : 1 940 Ko → 592 Ko, soit **−69 %** sur les images
   déployées. Repli automatique en `<picture>` produit par le build : les
@@ -281,6 +304,15 @@ aux textes orange de petite taille sur fond clair.
 (`.outlined`). Un calcul automatique ne sait pas lire un fond photographique ;
 vérification visuelle faite, ils restent lisibles grâce au dégradé de surimpression.
 
+### Référencement — deux points ouverts
+- **Deux pages partagent leur titre principal.** `/corporate` affiche « Plus
+  qu'une vidéo, un message qui résonne. » et `/a-propos` « Alban Dubois. Plus
+  qu'une vidéo, un message qui résonne. » Deux pages qui se présentent avec la
+  même phrase se font concurrence sur les moteurs. C'est du texte : décision du
+  client, pas une correction technique.
+- **Le `lastmod` du sitemap est figé** au 12 août 2026 et vieillira seul. Le
+  build pourrait le dater automatiquement à partir de la date des fichiers.
+
 ### 2.4 — référencement restant
 - **`VideoObject` : abandonné.** Le client ne souhaite pas fournir les dates de
   publication des vidéos (13 août 2026), or Google exige une `uploadDate` au
@@ -296,6 +328,11 @@ pas modifier la destination Formspree. La politique de confidentialité annonce
 `contact@alban-production.fr` comme adresse de contact du responsable de
 traitement, ce qui reste exact — c'est la boîte de réception technique qui
 diffère, pas l'interlocuteur.
+
+### Rangement, sans effet sur le site
+`public/` contient encore de vieux originaux en double avec `_originaux/`
+(`portrait.JPG`, `Sport.jpeg`, `Corporate.jpeg`) et un `corserein.html`
+orphelin. Aucun n'est déployé.
 
 ### Contenus manquants
 - **Photo du hero corporate** : le bloc `.corp-hero-media` existe, masqué et
@@ -343,6 +380,19 @@ failli neutraliser la synchronisation des vignettes Vimeo : le script réécriva
 bien `img.src`, mais le navigateur continuait d'afficher le `<source>`.
 `syncVimeoThumbnails()` retire donc les `<source>` avant de poser la nouvelle
 image. À garder en tête pour toute image locale pilotée par JavaScript.
+
+**L'espace de travail peut diverger du dépôt.** `logos/rods.webp` et
+`logos/wonderland.webp` existaient en ligne mais manquaient dans
+`~/Documents/Claude/public/` : les aperçus locaux affichaient deux logos cassés
+alors que le site en ligne allait bien. Avant toute campagne de vérification,
+comparer les deux dossiers :
+
+```bash
+cd ~/Documents/alban-production-site
+for f in $(git ls-files | grep -v '^_src/'); do
+  [ -f ~/Documents/Claude/public/"$f" ] || echo "manquant : $f"
+done
+```
 
 **Les noms des fichiers de polices sont inversés.** Les 16 fichiers nommés
 `…-ext.woff2` contiennent le **jeu latin de base** — celui qui écrit le texte
