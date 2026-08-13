@@ -313,20 +313,21 @@ aux textes orange de petite taille sur fond clair.
 vérification visuelle faite, ils restent lisibles grâce au dégradé de surimpression.
 
 ### Référencement — points ouverts
-- **Horaires incohérents entre le site et la fiche Google.** Le site et le
-  JSON-LD annoncent « Lundi — Vendredi, 9h → 17h » ; la fiche Google
-  Business affiche une fermeture à 18h. Pour le référencement local, ces
-  informations doivent concorder. [[À COMPLÉTER : horaire réel]] — corriger
-  ensuite aux trois endroits : page contact de `site.html`, bloc
-  `openingHoursSpecification` de `build.sh`, et la fiche Google.
+- **Horaires : le site a raison.** « Lundi — Vendredi, 9h → 17h » est
+  l'horaire réel (client, 13 août 2026). Rien à changer dans le code : c'est la
+  fiche Google Business, qui affiche une fermeture à 18h, qui doit être
+  corrigée. Vérifier que ce soit fait.
 - **Ne jamais baliser les témoignages du site en `Review`/`aggregateRating`.**
   Google interdit le balisage d'avis auto-déclarés pour un `LocalBusiness` :
   la page peut être sanctionnée. Les avis Google restent sur la fiche Google.
-- **Deux pages partagent leur titre principal.** `/corporate` affiche « Plus
-  qu'une vidéo, un message qui résonne. » et `/a-propos` « Alban Dubois. Plus
-  qu'une vidéo, un message qui résonne. » Deux pages qui se présentent avec la
-  même phrase se font concurrence sur les moteurs. C'est du texte : décision du
-  client, pas une correction technique.
+- **Titres principaux dédoublonnés — réglé sans toucher au texte.**
+  `/corporate` et `/a-propos` portaient la même accroche en titre de niveau 1.
+  Le client tient à cette accroche, qui définit son travail : elle est donc
+  restée affichée à l'identique sur les deux pages, mais sur `/a-propos` le
+  titre de niveau 1 ne couvre plus que « Alban Dubois ». La balise est en
+  `display:inline` et neutralisée en CSS — géométrie vérifiée au pixel près
+  contre la version précédente (mêmes x, y, largeur, hauteur). Les huit pages
+  ont désormais un titre principal unique et distinct.
 - **Le `lastmod` du sitemap est figé** au 12 août 2026 et vieillira seul. Le
   build pourrait le dater automatiquement à partir de la date des fichiers.
 
