@@ -3696,6 +3696,21 @@ body[data-page="legal"] { background: var(--paper); }
 }
 .skip-link:focus { transform: translateY(0); }
 
+/* ═══════════════════════════════════════════════
+   ENVELOPPE <picture> DU REPLI WEBP
+═══════════════════════════════════════════════ */
+/* Le build enveloppe chaque <img> ayant une version WebP dans un <picture>.
+   Sans cette règle, c'est le <picture> qui devient l'élément de grille ou de
+   flexbox à la place de l'image, et les pourcentages de l'image (max-height:
+   100% des logos, par exemple) se résolvent contre lui au lieu du conteneur
+   réel : les logos débordaient de leur case.
+   display:contents efface la boîte de l'enveloppe : l'image redevient enfant
+   direct de son conteneur, exactement comme avant l'ajout du WebP.
+   Ne pas retirer cette règle tant que le build produit des <picture>. */
+picture {
+  display: contents;
+}
+
 /* Champ piège anti-spam : sorti de l'écran plutôt que masqué en display:none,
    qui est trop facile à détecter pour un robot. Personne ne doit le voir ni
    l'atteindre au clavier (aria-hidden + tabindex="-1" sur le champ). */

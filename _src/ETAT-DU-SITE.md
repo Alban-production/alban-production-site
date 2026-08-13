@@ -325,6 +325,19 @@ bien `img.src`, mais le navigateur continuait d'afficher le `<source>`.
 `syncVimeoThumbnails()` retire donc les `<source>` avant de poser la nouvelle
 image. À garder en tête pour toute image locale pilotée par JavaScript.
 
+**L'enveloppe `<picture>` casse les grilles si on l'oublie.** Le build enveloppe
+les images en `<picture>` pour le repli WebP. Cette enveloppe devient alors
+l'élément de grille ou de flexbox à la place de l'image, et les pourcentages de
+l'image se résolvent contre elle : `.clients-scatter .logo img { max-height:
+100% }` se calculait contre un `<picture>` sans hauteur, et 17 logos débordaient
+de leur case. La règle `picture { display: contents; }` efface la boîte de
+l'enveloppe et rétablit le comportement d'origine. **Ne pas la supprimer.**
+
+**Vérifier en large, pas seulement en étroit.** Ce bug est passé parce que la
+vérification s'était faite dans une fenêtre de 800 px, où la grille des logos
+passe à 3 ou 4 colonnes et masquait le problème. Il n'apparaissait qu'au-delà
+de 900 px. Contrôler au moins deux largeurs : ~375 px et ~1900 px.
+
 **Une image en `display:none` est quand même téléchargée.** Le bloc masqué du
 hero corporate appelait picsum.photos à chaque visite. Masquer ne suffit pas :
 pour qu'une requête ne parte pas, il faut retirer l'attribut `src`.
