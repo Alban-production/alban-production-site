@@ -184,6 +184,11 @@
       iframe.setAttribute('allow', 'autoplay; fullscreen');
       iframe.setAttribute('tabindex', '-1');
       iframe.setAttribute('aria-hidden', 'true');
+      // Le lecteur Vimeo ne remplit pas toujours toute la hauteur du cadre, et
+      // ses marges sont transparentes : l'image d'attente transparaissait alors
+      // en bande au bas du hero. Une fois le lecteur chargé, elle n'a plus de
+      // raison d'être — on la retire et le fond peint reprend sa place.
+      iframe.addEventListener('load', () => hote.classList.add('lecteur-pret'), { once: true });
       hote.appendChild(iframe);
     }, '0px'));
   }

@@ -1701,6 +1701,13 @@ body {
 @media(min-width: 900px) { .sport-hero { padding: 10rem 3rem 5rem; gap: 3rem; } }
 
 /* Vimeo bg — plein hero, full-bleed */
+/* Une fois le lecteur Vimeo chargé, l'image d'attente est retirée : le lecteur
+   ne remplit pas toujours toute la hauteur du cadre et laisse des bandes
+   transparentes, dans lesquelles l'image se voyait. Le fond peint reprend la
+   main, comme avant l'ajout des images d'attente. Classe posée par app.js. */
+.corp-hero-bg.lecteur-pret,
+.sport-hero-bg.lecteur-pret { background-image: none; }
+
 /* Image d'attente du hero — même principe que .corp-hero-bg */
 .sport-hero-bg {
   position: absolute;
