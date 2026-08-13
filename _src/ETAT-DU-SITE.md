@@ -435,6 +435,13 @@ vérification s'était faite dans une fenêtre de 800 px, où la grille des logo
 passe à 3 ou 4 colonnes et masquait le problème. Il n'apparaissait qu'au-delà
 de 900 px. Contrôler au moins deux largeurs : ~375 px et ~1900 px.
 
+**Le lecteur Vimeo ne remplit pas tout son cadre, et ses marges sont
+transparentes.** L'image d'attente du hero se voyait donc en bande claire au
+bas de la page Sport, là où la vidéo s'arrêtait. Corrigé en retirant l'image
+dès que le lecteur a fini de charger : `app.js` pose la classe `lecteur-pret`
+sur l'événement `load` de l'iframe, et le CSS annule alors `background-image`.
+Ne pas supposer qu'une iframe est opaque.
+
 **Une image en `display:none` est quand même téléchargée.** Le bloc masqué du
 hero corporate appelait picsum.photos à chaque visite. Masquer ne suffit pas :
 pour qu'une requête ne parte pas, il faut retirer l'attribut `src`.
