@@ -48,6 +48,35 @@ ErrorDocument 404 /404.html
   ExpiresByType text/html              "access plus 0 seconds"
 </IfModule>
 
+# ——— En-têtes de sécurité et de confidentialité ———
+<IfModule mod_headers.c>
+  # Empêche le navigateur de deviner un type de fichier autre que celui annoncé
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Ne transmet que le domaine — et non l'URL complète de la page consultée —
+  # aux services extérieurs (lecteur Vimeo, liens sortants). Rien n'est envoyé
+  # du tout si la destination n'est pas en HTTPS.
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Le site n'utilise ni caméra, ni micro, ni géolocalisation, ni paiement :
+  # on retire explicitement ces autorisations, y compris aux iframes.
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+
+  # Interdit à un site tiers d'afficher celui-ci dans un cadre (habillage
+  # frauduleux). N'empêche pas le site d'intégrer le lecteur Vimeo.
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # HTTPS obligatoire pendant un an, sous-domaines compris. Le site force déjà
+  # HTTPS par réécriture : cet en-tête évite le premier aller-retour en clair.
+  # Ne pas activer « preload » sans certitude de rester en HTTPS durablement.
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS
+</IfModule>
+
+# Une politique de sécurité du contenu (CSP) complète n'est volontairement pas
+# posée : le site contient des styles et des gestionnaires en ligne, une CSP
+# stricte casserait l'affichage. La ligne upgrade-insecure-requests déjà servie
+# par l'hébergeur couvre l'essentiel. Chantier à part entière si besoin.
+
 <IfModule mod_headers.c>
   # Le HTML est systématiquement revalidé auprès du serveur
   <FilesMatch "\.html$">

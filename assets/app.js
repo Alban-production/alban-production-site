@@ -148,39 +148,16 @@
     elements.forEach(el => obs.observe(el));
   }
 
-  // Sync thumbnails with the official Vimeo thumbnail (oEmbed API)
-  // Anytime the user updates a custom thumbnail on Vimeo, the site reflects it.
-  // L'appel part quand la vignette approche de l'écran, et non au chargement :
-  // sur la page Corporate cela évitait quatre requêtes vers Vimeo avant même
-  // que le visiteur ait vu la première section.
-  function syncVimeoThumbnails() {
-    const hotes = [...document.querySelectorAll('[data-video]')].filter(h => {
-      const raw = h.getAttribute('data-video');
-      return raw && /vimeo\.com\/(?:video\/)?\d+/.test(raw)
-          && (h.tagName === 'IMG' || h.querySelector('img'));
-    });
-    aLApproche(hotes, (host) => {
-      const id = host.getAttribute('data-video').match(/vimeo\.com\/(?:video\/)?(\d+)/)[1];
-      const img = host.tagName === 'IMG' ? host : host.querySelector('img');
-      fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${id}&width=1600`)
-        .then(r => r.ok ? r.json() : null)
-        .then(data => {
-          if (!data || !data.thumbnail_url) return;
-          // Vimeo returns _640 or _1280 — strip suffix to get max-res
-          const maxUrl = data.thumbnail_url.replace(/_\d+x\d+(?=\.\w+($|\?))/, '');
-          // Une vignette locale peut être servie via <picture> : les <source>
-          // l'emportent sur src, il faut donc les retirer pour que l'image
-          // fraîchement récupérée sur Vimeo s'affiche réellement.
-          const pic = img.parentElement;
-          if (pic && pic.tagName === 'PICTURE') {
-            pic.querySelectorAll('source').forEach(s => s.remove());
-          }
-          img.src = maxUrl;
-        })
-        .catch(() => {/* fail silently → vumbnail fallback in src */});
-    });
-  }
-  syncVimeoThumbnails();
+  /* ——— Vignettes des projets ———
+     Elles étaient chargées depuis vumbnail.com, puis remplacées à l'exécution
+     par l'URL renvoyée par l'API oEmbed de Vimeo. Deux services tiers appelés
+     à chaque visite, recevant l'adresse IP du visiteur, dont un seul figurait
+     dans la politique de confidentialité.
+     Les vignettes sont désormais hébergées sur le site, dans /vignettes/, et
+     rafraîchies à la fabrication par _src/vignettes.sh. Plus aucune requête
+     vers l'extérieur : il n'y a donc plus rien à synchroniser ici.
+     Contrepartie assumée : changer une vignette sur Vimeo ne se reflète plus
+     tout seul, il faut relancer vignettes.sh puis webp.sh et build.sh. */
 
   /* ——— Vidéos d'arrière-plan des héros Sport et Corporate ———
      Le lecteur Vimeo était présent dans le HTML : il se lançait donc en même

@@ -3228,7 +3228,7 @@ body.sp-locked { overflow: hidden; }
       <span class="timecode">REC <span class="blink">●</span> 02:47:12</span>
     </div>
     <div class="showreel" data-video="https://vimeo.com/1146874775" data-video-label="Vimeo">
-      <img src="https://vumbnail.com/1146874775_large.jpg" alt="Showreel 2026" loading="lazy" width="1280" height="720">
+      <img src="vignettes/1146874775.jpg" alt="Showreel 2026" loading="lazy" width="1280" height="720">
       <div class="showreel-overlay">
         <div class="play-btn">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -3263,9 +3263,15 @@ body.sp-locked { overflow: hidden; }
         4) data-format="Film de marque"               → type / format
         5) data-brief="Le brief en 1 phrase…"         → contexte du projet
         6) data-challenges="Le défi relevé…"          → défis techniques / créatifs
-        7) <img src="https://vumbnail.com/XXXXXXX_large.jpg" width="1280" height="720">
-              → miniature auto-générée à partir de l'ID Vimeo
-                (remplace XXXXXXX par le même ID que data-video)
+        7) <img src="vignettes/XXXXXXX.jpg" width="1280" height="720">
+              → même identifiant que data-video
+              → puis, dans un terminal, récupérer la vignette :
+                    bash ~/Documents/Claude/public/_src/vignettes.sh
+                    bash ~/Documents/Claude/public/_src/webp.sh
+                    bash ~/Documents/Claude/public/_src/build.sh
+                La vignette officielle de la vidéo est téléchargée et hébergée
+                sur le site. Ne plus appeler vumbnail.com ni aucun service
+                d'images extérieur : ils reçoivent l'adresse IP des visiteurs.
         8) <h3 class="sport-project-title">Titre du projet</h3>
         9) <p class="sport-project-sub">Client — descriptif</p>
 
@@ -3285,7 +3291,7 @@ body.sp-locked { overflow: hidden; }
                data-format="Captation interviews"
                data-brief="Réaliser une série d'interviews pour permettre aux personnes absentes de la conférence d'accéder à l'essentiel du sujet — un format clair, synthétique et accessible, pensé pour la diffusion auprès de la filière équine."
                data-challenges="Tourner les interviews dans la salle même de la conférence : isoler le son des micros sans bruit parasite et composer un cadre soigné malgré un espace de tournage très réduit.">
-        <img src="https://vumbnail.com/1189402040_large.jpg" alt="Conférence prédation du loup — Filière Conseil Cheval AURA" loading="lazy" onerror="this.onerror=null;this.src='https://vumbnail.com/1189402040.jpg'" width="1280" height="720">
+        <img src="vignettes/1189402040.jpg" alt="Conférence prédation du loup — Filière Conseil Cheval AURA" loading="lazy" width="1280" height="720">
         <div class="sport-project-content">
           <div class="sport-project-meta"><span class="accent">N° 01</span></div>
           <h3 class="sport-project-title">Prédation du loup<br>sur les chevaux</h3>
@@ -3302,7 +3308,7 @@ body.sp-locked { overflow: hidden; }
                data-format="Film de présentation — voix off"
                data-brief="Mettre en valeur l'identité du club et présenter l'ensemble des cours proposés à travers un film fédérateur, porté par une voix off, destiné à attirer de nouveaux adhérents et à renforcer le rayonnement du club."
                data-challenges="Filmer chaque discipline avec une lecture cinématique — capter l'engagement des pratiquants sans perturber les séances — puis tisser l'ensemble en un film cohérent, rythmé, à la fois informatif et émotionnel.">
-        <img src="entente-gymnique.jpg" alt="Entente Gymnique Bourg-en-Bresse" loading="lazy" onerror="this.onerror=null;this.src='https://vumbnail.com/1191816592_large.jpg'" width="1200" height="675">
+        <img src="entente-gymnique.jpg" alt="Entente Gymnique Bourg-en-Bresse" loading="lazy" width="1200" height="675">
         <div class="sport-project-content">
           <div class="sport-project-meta"><span class="accent">N° 02</span></div>
           <h3 class="sport-project-title">Entente Gymnique<br>Bourg-en-Bresse</h3>
@@ -3319,7 +3325,7 @@ body.sp-locked { overflow: hidden; }
                data-format="Brand film — interview"
                data-brief="Présenter la carte de soins de Cor'Serein et renforcer son image de marque. Donner envie de prendre rendez-vous en posant un visage sur le soin — un univers qui se choisit autant pour la personne que pour la prestation."
                data-challenges="Réaliser une interview chaleureuse et naturelle, où la praticienne se livre avec justesse — puis tisser ses mots à des images du studio et des soins, pour faire ressentir la sérénité du lieu autant que l'expertise du geste.">
-        <img src="https://vumbnail.com/1194074589_large.jpg" alt="Cor'Serein — Massages bien-être" loading="lazy" onerror="this.onerror=null;this.src='https://vumbnail.com/1194074589.jpg'" width="1280" height="720">
+        <img src="vignettes/1194074589.jpg" alt="Cor'Serein — Massages bien-être" loading="lazy" width="1280" height="720">
         <div class="sport-project-content">
           <div class="sport-project-meta"><span class="accent">N° 03</span></div>
           <h3 class="sport-project-title">Cor'Serein</h3>
@@ -3575,7 +3581,7 @@ body.sp-locked { overflow: hidden; }
   <!-- Showreel -->
   <section class="sport-reel-wrap" id="sport-reel">
     <div class="sport-reel" data-video="https://vimeo.com/1146874775" data-video-label="Vimeo">
-      <img src="https://vumbnail.com/1146874775_large.jpg" alt="Showreel sport 2024" loading="lazy" onerror="this.onerror=null;this.src='https://vumbnail.com/1146874775.jpg'" width="1280" height="720">
+      <img src="vignettes/1146874775.jpg" alt="Showreel sport 2024" loading="lazy" width="1280" height="720">
       <div class="showreel-overlay">
         <div class="play-btn">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -3625,7 +3631,7 @@ body.sp-locked { overflow: hidden; }
                data-format="Aftermovie festival — co-réalisation avec Playfilm Production"
                data-brief="Retransmettre l'énergie brute du festival et donner envie de venir sur la prochaine édition, à travers un aftermovie ultra-dynamique, rythmé et immersif."
                data-challenges="Être au bon endroit au bon moment pour capturer les plus belles images du show. Tournage en équipe avec Playfilm Production pour couvrir l'intégralité de l'événement et ne rater aucun temps fort — public, artistes, coulisses, décors.">
-        <img src="https://vumbnail.com/1214223229_large.jpg" alt="Aftermovie Electra Festival" loading="lazy" onerror="this.onerror=null;this.src='https://vumbnail.com/1214223229.jpg'" width="1280" height="720">
+        <img src="vignettes/1214223229.jpg" alt="Aftermovie Electra Festival" loading="lazy" width="1280" height="720">
         <div class="sport-project-content">
           <div class="sport-project-meta">
             <span class="accent">N° 01</span>
@@ -3643,7 +3649,7 @@ body.sp-locked { overflow: hidden; }
                data-format="Film promotionnel"
                data-brief="Couvrir la tournée Octobre Rose d'Aésio Mutuelle — sensibilisation au dépistage du cancer du sein à travers une série de matches caritatifs."
                data-challenges="Réunir les 5 équipes à travers des transitions fluides et impactantes, pour condenser la tournée en un film promotionnel cohérent et fédérateur.">
-        <img src="https://vumbnail.com/1136420360_large.jpg" alt="Matches Octobre Rose" loading="lazy" onerror="this.onerror=null;this.src='https://vumbnail.com/1136420360.jpg'" width="1280" height="720">
+        <img src="vignettes/1136420360.jpg" alt="Matches Octobre Rose" loading="lazy" width="1280" height="720">
         <div class="sport-project-content">
           <div class="sport-project-meta">
             <span class="accent">N° 02</span>
@@ -3661,7 +3667,7 @@ body.sp-locked { overflow: hidden; }
                data-format="Captation événementielle"
                data-brief="Capturer l'essence du All Star Perche — l'énergie du public, la concentration des athlètes et l'intensité de chaque tentative."
                data-challenges="Suivre l'action au plus près sans gêner les sauteurs, puis monter et livrer les meilleurs sauts de chaque athlète pour les réseaux le jour même.">
-        <img src="https://vumbnail.com/1168488366_large.jpg" alt="All Star Perche" loading="lazy" onerror="this.onerror=null;this.src='https://vumbnail.com/1168488366.jpg'" width="1280" height="720">
+        <img src="vignettes/1168488366.jpg" alt="All Star Perche" loading="lazy" width="1280" height="720">
         <div class="sport-project-content">
           <div class="sport-project-meta">
             <span class="accent">N° 03</span>
