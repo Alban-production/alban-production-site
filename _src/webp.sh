@@ -18,9 +18,16 @@ command -v cwebp >/dev/null || { echo "ERREUR: cwebp introuvable (brew install w
 # depuis les sources HTML. La racine de public/ contient aussi d'anciens
 # originaux (portrait.JPG, Sport.jpeg…) qui ne sont pas déployés.
 images_du_site () {
-  grep -ho 'src="[^"]*\.\(jpg\|jpeg\|png\|JPG\|JPEG\|PNG\)"' \
-       "$PUB/site.html" "$PUB/_src/"*.html 2>/dev/null \
-    | sed 's/^src="//; s/"$//' \
+  {
+    # Balises <img src="…">
+    grep -ho 'src="[^"]*\.\(jpg\|jpeg\|png\|JPG\|JPEG\|PNG\)"' \
+         "$PUB/site.html" "$PUB/_src/"*.html 2>/dev/null \
+      | sed 's/^src="//; s/"$//'
+    # Fonds CSS : url('…') — les images d'attente des héros arrivent par là,
+    # elles n'ont pas de balise <img> et seraient sinon oubliées.
+    grep -hoE "url\('?[^')]*\.(jpg|jpeg|png)'?\)" "$PUB/assets/styles.css" 2>/dev/null \
+      | sed -E "s/^url\('?//; s/'?\)$//"
+  } \
     | grep -v '^https\?:' \
     | sed 's|^/||' \
     | sort -u

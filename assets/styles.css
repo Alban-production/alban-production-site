@@ -543,6 +543,12 @@ body {
 }
 
 /* Corporate hero — background video */
+/* Image d'attente du hero : elle est posée sous l'iframe, qui la recouvre une
+   fois le lecteur démarré. Elle reste donc visible pendant le chargement, et en
+   permanence pour qui a demandé l'économie de données ou la réduction des
+   animations — dans ce cas aucune vidéo n'est créée (voir app.js).
+   La première déclaration sert de repli : les navigateurs qui ne connaissent
+   pas image-set() l'appliquent et ignorent la seconde. */
 .corp-hero-bg {
   position: absolute;
   top: 0; bottom: 0;
@@ -552,7 +558,9 @@ body {
   overflow: hidden;
   z-index: -1;
   pointer-events: none;
-  background: var(--paper);
+  background: var(--paper) url('/hero-corporate.jpg') center / cover no-repeat;
+  background-image: image-set(url('/hero-corporate.webp') type('image/webp'),
+                              url('/hero-corporate.jpg')  type('image/jpeg'));
 }
 .corp-hero-bg iframe {
   position: absolute;
@@ -1693,6 +1701,7 @@ body {
 @media(min-width: 900px) { .sport-hero { padding: 10rem 3rem 5rem; gap: 3rem; } }
 
 /* Vimeo bg — plein hero, full-bleed */
+/* Image d'attente du hero — même principe que .corp-hero-bg */
 .sport-hero-bg {
   position: absolute;
   top: 0; bottom: 0;
@@ -1702,6 +1711,9 @@ body {
   overflow: hidden;
   z-index: -1;
   pointer-events: none;
+  background: var(--ink-deep, #0a0a0b) url('/hero-sport.jpg') center / cover no-repeat;
+  background-image: image-set(url('/hero-sport.webp') type('image/webp'),
+                              url('/hero-sport.jpg')  type('image/jpeg'));
 }
 .sport-hero-bg iframe {
   position: absolute;
