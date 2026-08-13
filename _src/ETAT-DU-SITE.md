@@ -137,6 +137,12 @@ Les URLs sans `.html` sont produites par `.htaccess` (réécriture Apache).
 
 ## 4. Ce qui a été fait
 
+> **Phases 2.2 à 2.5 mises en ligne le 13 août 2026** — 29 commits poussés d'un
+> seul coup. Vérifié en ligne : les 7 URLs répondent, la 404 sert bien la page
+> personnalisée, `robots.txt` et `sitemap.xml` sont servis, le JSON-LD est
+> présent sur toutes les pages, les images sont en WebP et le lecteur Vimeo ne
+> démarre plus qu'après le premier rendu.
+
 ### Phase 0 — audit
 Rapport complet : SPA mono-URL, aucune mention légale, formulaire sans
 consentement, 10 Mo d'images, aucune donnée structurée.
