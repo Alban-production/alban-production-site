@@ -21,9 +21,15 @@
 <meta name="twitter:description" content="Mentions légales du site Alban Production : éditeur, directeur de publication, hébergeur et propriété intellectuelle.">
 <meta name="twitter:image" content="https://alban-production.fr/og-image.jpg">
 
+<!-- Favicon. L'ancienne version ne déclarait qu'un SVG, au format 4748×3254 :
+     Google n'accepte qu'une icône carrée, et son robot cherche d'abord
+     /favicon.ico — absent, d'où le globe générique dans les résultats.
+     Désormais : SVG carré pour les navigateurs récents, PNG en 48 et 192
+     (Google exige un multiple de 48), et un vrai favicon.ico à la racine. -->
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="alternate icon" href="/favicon.svg">
-<link rel="apple-touch-icon" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0a0a0b">
 
 <!-- ATTENTION : les noms des fichiers de polices sont inversés par rapport à leur
