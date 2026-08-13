@@ -176,6 +176,39 @@
     const animationsReduites = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (donneesReduites || animationsReduites) return;
 
+    /* ——— Quand retirer l'image d'attente ———
+       Le lecteur Vimeo ne remplit pas toute la hauteur de son cadre et ses
+       marges sont transparentes : l'image d'attente s'y voyait en bande. Mais
+       la retirer dès l'événement « load » de l'iframe est trop tôt — le lecteur
+       est chargé, la vidéo pas encore affichée, et l'on voyait passer le fond
+       peint entre les deux.
+       On attend donc que les images défilent vraiment. Le lecteur Vimeo répond
+       à l'API postMessage sans bibliothèque : on s'abonne à la progression de
+       lecture, qui ne se déclenche qu'une fois la vidéo réellement engagée.
+       Attention au nom de l'événement : ce lecteur renvoie « playProgress »
+       (ancienne convention Froogaloop), et non « timeupdate ». On accepte les
+       deux, au cas où Vimeo alignerait un jour son vocabulaire.
+       Si le lecteur ne répond pas, on ne retire rien : l'image reste, avec sa
+       bande — moins gênant qu'un clignotement. */
+    const enAttente = new Map();   // fenêtre du lecteur → hôte
+
+    window.addEventListener('message', (e) => {
+      if (e.origin !== 'https://player.vimeo.com') return;
+      const hote = enAttente.get(e.source);
+      if (!hote) return;
+      let donnees;
+      try { donnees = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch (err) { return; }
+      if (!donnees) return;
+      if (donnees.event === 'ready') {
+        e.source.postMessage(JSON.stringify({ method: 'addEventListener', value: 'playProgress' }), e.origin);
+        return;
+      }
+      if (donnees.event === 'playProgress' || donnees.event === 'timeupdate') {
+        hote.classList.add('lecteur-pret');
+        enAttente.delete(e.source);
+      }
+    });
+
     auRepos(() => aLApproche(hotes, (hote) => {
       if (hote.querySelector('iframe')) return;
       const iframe = document.createElement('iframe');
@@ -184,11 +217,14 @@
       iframe.setAttribute('allow', 'autoplay; fullscreen');
       iframe.setAttribute('tabindex', '-1');
       iframe.setAttribute('aria-hidden', 'true');
-      // Le lecteur Vimeo ne remplit pas toujours toute la hauteur du cadre, et
-      // ses marges sont transparentes : l'image d'attente transparaissait alors
-      // en bande au bas du hero. Une fois le lecteur chargé, elle n'a plus de
-      // raison d'être — on la retire et le fond peint reprend sa place.
-      iframe.addEventListener('load', () => hote.classList.add('lecteur-pret'), { once: true });
+      iframe.addEventListener('load', () => {
+        enAttente.set(iframe.contentWindow, hote);
+        // Le message « ready » peut être parti avant qu'on écoute : on redemande.
+        iframe.contentWindow.postMessage(
+          JSON.stringify({ method: 'addEventListener', value: 'playProgress' }),
+          'https://player.vimeo.com'
+        );
+      }, { once: true });
       hote.appendChild(iframe);
     }, '0px'));
   }
