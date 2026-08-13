@@ -437,10 +437,22 @@ de 900 px. Contrôler au moins deux largeurs : ~375 px et ~1900 px.
 
 **Le lecteur Vimeo ne remplit pas tout son cadre, et ses marges sont
 transparentes.** L'image d'attente du hero se voyait donc en bande claire au
-bas de la page Sport, là où la vidéo s'arrêtait. Corrigé en retirant l'image
-dès que le lecteur a fini de charger : `app.js` pose la classe `lecteur-pret`
-sur l'événement `load` de l'iframe, et le CSS annule alors `background-image`.
-Ne pas supposer qu'une iframe est opaque.
+bas de la page Sport, là où la vidéo s'arrêtait. Ne pas supposer qu'une iframe
+est opaque.
+
+**Et « load » sur une iframe ne veut pas dire « la vidéo s'affiche ».** Premier
+correctif retiré : l'image d'attente disparaissait à l'événement `load`, donc
+avant que la vidéo ne démarre — on voyait l'image, puis le fond peint, puis la
+vidéo. La bonne condition est la progression de lecture, obtenue via l'API
+postMessage du lecteur, sans bibliothèque :
+
+- s'abonner avec `{method:'addEventListener', value:'playProgress'}` ;
+- **l'événement s'appelle `playProgress`**, pas `timeupdate` — vérifié en
+  écoutant les messages réellement émis par le lecteur ;
+- valider `e.origin === 'https://player.vimeo.com'` avant de traiter le message.
+
+Si le lecteur ne répond pas, rien n'est retiré : l'image reste avec sa bande,
+ce qui reste préférable à un clignotement.
 
 **Une image en `display:none` est quand même téléchargée.** Le bloc masqué du
 hero corporate appelait picsum.photos à chaque visite. Masquer ne suffit pas :
