@@ -221,17 +221,32 @@ Il faut pour cela **un export local d'une image des deux vidéos**
 tirer d'un service tiers : cela réintroduirait la requête que le chargement
 différé vient d'éviter.
 
+L'image sert dans trois cas, pas seulement pendant le chargement :
+1. le temps que le lecteur Vimeo démarre ;
+2. **en permanence** pour qui a demandé l'économie de données ou la réduction
+   des animations — ces visiteurs ne verront jamais la vidéo ;
+3. si Vimeo est bloqué ou indisponible.
+
+Mise en œuvre prévue : `background-image` sur `.sport-hero-bg` et
+`.corp-hero-bg`, donc sous l'iframe, qui la recouvre une fois chargée. Aucune
+balise à ajouter. Fournir deux fichiers larges (1920 px au moins), le script
+`webp.sh` s'occupe de l'allègement.
+
 **Ce qui n'a pas pu être mesuré** : le volume réellement diffusé par les
 lecteurs Vimeo. Le contenu d'une iframe d'un autre domaine est invisible aux
 outils de mesure de la page, et Vimeo ne renvoie pas d'en-tête d'autorisation
 de mesure. Ce qui est établi : sur le site en ligne, sept requêtes vers des
 domaines Vimeo partaient avant le premier écran ; il n'en reste qu'une.
 
-### 2.3 — contrastes : ce qui dépend des couleurs de marque
+### 2.3 — contrastes : arbitré, on ne touche pas aux couleurs
+**Décision du client du 13 août 2026 : les couleurs restent telles quelles.**
+Les écarts ci-dessous sont donc assumés et ne doivent pas être « corrigés » lors
+d'une reprise. Ils sont documentés pour mémoire, au cas où un audit
+d'accessibilité les remonterait plus tard.
+
 L'audit a été mené sur les 8 pages, en calculant le ratio réel de chaque texte
 contre son fond effectif. Ce qui restait sous le seuil WCAG AA après correction
-du lien d'évitement touche **les couleurs choisies par le client** : ces points
-demandent son arbitrage avant toute modification.
+du lien d'évitement tient aux couleurs de marque :
 
 | Où | Texte | Ratio | Seuil | Cause |
 |---|---|---|---|---|
@@ -239,10 +254,10 @@ demandent son arbitrage avant toute modification.
 | Corporate | libellés `N° 01`, `LIVRABLE` (10 px) | 2,51:1 | 4,5:1 | orange `#ff6a1a` sur fond clair |
 | Accueil | bandeau défilant, mentions non accentuées (11 px) | 4,21:1 | 4,5:1 | gris légèrement trop clair |
 
-Deux correctifs possibles, tous deux sans refonte :
-- texte encre `#111113` au lieu de blanc sur les aplats orange → **6,6:1**
-- variante d'orange assombrie (`--accent-muted` `#cc4e0d` existe déjà) réservée
-  aux textes orange de petite taille sur fond clair
+Si la question revient un jour, deux correctifs sont possibles sans refonte :
+texte encre `#111113` au lieu de blanc sur les aplats orange (**6,6:1**), ou
+variante d'orange assombrie (`--accent-muted` `#cc4e0d`, déjà définie) réservée
+aux textes orange de petite taille sur fond clair.
 
 **Faux positifs écartés** : les titres posés sur photo (`about-hero-title`,
 `sport-project-title`, `sport-project-sub`) et les textes en contour
@@ -250,11 +265,10 @@ Deux correctifs possibles, tous deux sans refonte :
 vérification visuelle faite, ils restent lisibles grâce au dégradé de surimpression.
 
 ### 2.4 — référencement restant
-- **`VideoObject` sur les projets** : bloqué. Google exige une `uploadDate` au
-  format ISO ; le site ne connaît que l'année (`data-year`). Il faut la **date de
-  publication réelle de chaque vidéo Vimeo** — [[À COMPLÉTER : dates de mise en
-  ligne des projets]]. Le reste des champs est déjà disponible dans le HTML
-  (titre, client, vignette, URL Vimeo).
+- **`VideoObject` : abandonné.** Le client ne souhaite pas fournir les dates de
+  publication des vidéos (13 août 2026), or Google exige une `uploadDate` au
+  format ISO et le site ne connaît que l'année. Sans elle, le balisage serait
+  rejeté ou inventé : on s'en passe. Ne pas rouvrir le sujet sans les dates.
 - Le `<h1>` de la page Sport est « Absolute Cinema » : fort visuellement mais
   ne cible aucune requête. Alternative à proposer au client avant modification.
 
@@ -264,10 +278,10 @@ vérification visuelle faite, ils restent lisibles grâce au dégradé de surimp
   effectué ici : il enverrait un vrai message au client.
 
 ### Contenus manquants
+- **Images d'attente des vidéos de fond** (voir 2.2) — la seule pièce qui bloque
+  encore une tâche en cours.
 - **Photo du hero corporate** : le bloc existe, masqué et vide, en attente d'une
   vraie photo de tournage et de sa légende.
-- **Images d'attente des vidéos de fond** (voir 2.2).
-- **Dates de publication des vidéos Vimeo** (voir 2.4).
 
 ---
 
