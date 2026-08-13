@@ -3195,12 +3195,22 @@ body.sp-locked { overflow: hidden; }
       </div>
     </div>
 
-    <!-- Bloc désactivé, conservé pour une vraie photo de tournage.
-         L'image de remplissage qui s'y trouvait venait de picsum.photos : bien
-         qu'invisible (display:none), le navigateur la téléchargeait à chaque
-         visite, ce qui transmettait l'adresse IP du visiteur à un service tiers.
-         [[À COMPLÉTER : photo de tournage + légende réelle]] -->
-    <figure class="corp-hero-media reveal" hidden style="display:none;">
+    <!-- Bloc désactivé. Il ne porte volontairement PAS d'attribut src : une
+         image reste téléchargée même dans un bloc masqué, et c'est précisément
+         ce qui a fait retirer l'ancienne image picsum.photos. Le visuel retenu
+         est noté ici, à poser au moment où le bloc sera réaffiché.
+
+         Pour l'afficher :
+           1. retirer hidden et le style en ligne ;
+           2. ajouter <img src="alban-portrait.jpg" alt="Alban Dubois en
+              tournage" width="2400" height="1600"> ;
+           3. repasser .corp-hero à deux colonnes au-delà de 900 px — il est
+              en 1fr aujourd'hui, l'image se placerait sinon sous le texte ;
+           4. le cadre est en 4/5 (portrait) et la photo en 3/2 (paysage) :
+              vérifier le recadrage, object-fit: cover coupe beaucoup.
+         [[À COMPLÉTER : légende du visuel]] -->
+    <figure class="corp-hero-media reveal" hidden style="display:none;"
+            data-visuel-retenu="alban-portrait.jpg">
       <figcaption class="corp-hero-media-cap"></figcaption>
     </figure>
 

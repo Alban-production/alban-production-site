@@ -146,8 +146,15 @@ ${CANON_TAG}
 <link rel="apple-touch-icon" href="/favicon.svg">
 <meta name="theme-color" content="#0a0a0b">
 
-<link rel="preload" href="/assets/fonts/montserrat-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/montserrat-600.woff2" as="font" type="font/woff2" crossorigin>
+<!-- ATTENTION : les noms des fichiers de polices sont inversés par rapport à leur
+     contenu. Ceux nommés « -ext » portent le jeu latin de base, celui qui écrit
+     le texte français ; ceux sans suffixe portent le latin étendu, qu'aucun
+     caractère du site n'utilise. Précharger les seconds revenait à télécharger
+     132 Ko en priorité haute pour rien, sans accélérer l'affichage du texte.
+     Vérifier la plage unicode-range dans fonts.css avant de toucher à ces deux
+     lignes, pas le nom du fichier. -->
+<link rel="preload" href="/assets/fonts/montserrat-400-ext.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/montserrat-600-ext.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts.css?v=${V_FONTS}">
 <link rel="stylesheet" href="/assets/styles.css?v=${V_CSS}">
 
