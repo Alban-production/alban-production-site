@@ -3061,6 +3061,15 @@ body.sp-locked { overflow: hidden; }
     max-width: 18ch;
     color: #fff;
   }
+  /* Le <h1> ne porte que « Alban Dubois » : il est neutralisé visuellement
+     pour que le bloc s'affiche exactement comme avant (voir site.html). */
+  .about-hero-title h1 {
+    display: inline;
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    margin: 0;
+  }
   .about-hero-title .dot { color: var(--accent); }
   .about-hero-title em {
     font-family: var(--font-serif-accent);

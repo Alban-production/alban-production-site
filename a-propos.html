@@ -42,7 +42,7 @@
 <link rel="preload" href="/assets/fonts/montserrat-400-ext.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/montserrat-600-ext.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts.css?v=96394fb1">
-<link rel="stylesheet" href="/assets/styles.css?v=3a34f02d">
+<link rel="stylesheet" href="/assets/styles.css?v=31d488c6">
 
 <script type="application/ld+json">
 {
@@ -126,10 +126,16 @@
     </div>
     <div class="about-hero-title-wrap">
       <div class="about-hero-kicker">À propos —</div>
-      <h1 class="about-hero-title">
-        Alban Dubois<span class="dot">.</span><br>
+      <!-- Le titre principal de cette page est « Alban Dubois ». L'accroche
+           reste affichée à l'identique, mais elle n'est plus le titre de niveau
+           1 ici : elle l'est déjà sur la page Corporate, et deux pages qui se
+           présentent aux moteurs avec le même titre se font concurrence.
+           La balise est passée en display:inline pour que le rendu ne bouge pas
+           d'un pixel — voir .about-hero-title h1 dans assets/styles.css. -->
+      <div class="about-hero-title">
+        <h1>Alban Dubois<span class="dot">.</span></h1><br>
         <em>Plus qu'une vidéo,<br>un message qui résonne.</em>
-      </h1>
+      </div>
     </div>
     <div class="about-hero-scroll" aria-hidden="true">
       <span>Lire</span>
