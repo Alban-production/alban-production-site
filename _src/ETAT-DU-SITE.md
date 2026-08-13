@@ -286,8 +286,8 @@ vérification visuelle faite, ils restent lisibles grâce au dégradé de surimp
   publication des vidéos (13 août 2026), or Google exige une `uploadDate` au
   format ISO et le site ne connaît que l'année. Sans elle, le balisage serait
   rejeté ou inventé : on s'en passe. Ne pas rouvrir le sujet sans les dates.
-- Le `<h1>` de la page Sport est « Absolute Cinema » : fort visuellement mais
-  ne cible aucune requête. Alternative à proposer au client avant modification.
+- Le `<h1>` de la page Sport, « Absolute Cinema », ne cible aucune requête mais
+  **le client le garde tel quel (13 août 2026)**. Ne pas le remettre en cause.
 
 ### 2.5 — formulaire de contact : clos
 Les messages arrivent sur l'adresse Gmail du client, et non sur
