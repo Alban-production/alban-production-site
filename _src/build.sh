@@ -126,6 +126,11 @@ make_page () {
 <title>${TITLE}</title>
 <meta name="description" content="${DESC}">
 <meta name="author" content="Alban Dubois">
+<!-- Preuve de propriété pour la Search Console de Google (méthode « balise HTML »,
+     13 août 2026). Ce n'est pas un secret : la balise est publique par nature.
+     Ne pas la retirer — Google revérifie périodiquement, et la propriété serait
+     perdue, avec l'historique de performances qui va avec. -->
+<meta name="google-site-verification" content="782qQTSrLFsS3xoEdYmQMaeFbhl7r28yD8CcuYY8qZE">
 ${CANON_TAG}
 
 <meta property="og:type" content="website">
