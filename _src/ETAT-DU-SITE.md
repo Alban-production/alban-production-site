@@ -213,6 +213,14 @@ consentement, 10 Mo d'images, aucune donnée structurée.
   tout seul. Relancer `vignettes.sh`, puis `webp.sh` et `build.sh`.
   Résultat vérifié en ligne : une page de projet ne contacte plus que
   `player.vimeo.com`, seul tiers déclaré dans la politique.
+- **Favicon refait.** Le site ne déclarait qu'un SVG au format 4748×3254, et
+  `/favicon.ico` renvoyait 404. Google n'accepte qu'une icône **carrée** et son
+  robot cherche d'abord `/favicon.ico` : d'où le globe générique dans les
+  résultats de recherche et dans les onglets. Le monogramme AP est désormais
+  centré dans un carré sur le fond sombre de la marque, décliné en SVG, PNG
+  48/96/192/512, `apple-touch-icon` 180 et un vrai `favicon.ico` contenant deux
+  tailles. Rien de nouveau côté graphisme : ce sont les tracés d'`icone.svg`.
+  Régénérable avec `qlmanage` puis `sips` — aucun outil à installer.
 - **En-têtes de sécurité** posés dans `.htaccess` : `X-Content-Type-Options`,
   `Referrer-Policy` (l'URL complète des pages n'est plus transmise aux tiers),
   `Permissions-Policy`, `X-Frame-Options`, `Strict-Transport-Security`.
@@ -304,7 +312,16 @@ aux textes orange de petite taille sur fond clair.
 (`.outlined`). Un calcul automatique ne sait pas lire un fond photographique ;
 vérification visuelle faite, ils restent lisibles grâce au dégradé de surimpression.
 
-### Référencement — deux points ouverts
+### Référencement — points ouverts
+- **Horaires incohérents entre le site et la fiche Google.** Le site et le
+  JSON-LD annoncent « Lundi — Vendredi, 9h → 17h » ; la fiche Google
+  Business affiche une fermeture à 18h. Pour le référencement local, ces
+  informations doivent concorder. [[À COMPLÉTER : horaire réel]] — corriger
+  ensuite aux trois endroits : page contact de `site.html`, bloc
+  `openingHoursSpecification` de `build.sh`, et la fiche Google.
+- **Ne jamais baliser les témoignages du site en `Review`/`aggregateRating`.**
+  Google interdit le balisage d'avis auto-déclarés pour un `LocalBusiness` :
+  la page peut être sanctionnée. Les avis Google restent sur la fiche Google.
 - **Deux pages partagent leur titre principal.** `/corporate` affiche « Plus
   qu'une vidéo, un message qui résonne. » et `/a-propos` « Alban Dubois. Plus
   qu'une vidéo, un message qui résonne. » Deux pages qui se présentent avec la
