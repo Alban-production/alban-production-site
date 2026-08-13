@@ -214,6 +214,13 @@ consentement, 10 Mo d'images, aucune donnée structurée.
   visite : le navigateur récupère les images en `display:none`. C'était un
   transfert d'IP vers un service tiers, du même ordre que les polices Google
   supprimées en phase 1. Le bloc est conservé, vide, pour une vraie photo.
+- **Préchargement des polices corrigé** : le build préchargeait
+  `montserrat-400.woff2` et `montserrat-600.woff2`, soit **133 Ko en priorité
+  haute sur chaque page** — pour rien. Ces fichiers portent le jeu latin
+  étendu, dont aucun caractère du site n'a besoin ; le texte est rendu par les
+  fichiers nommés `-ext`. Les préchargements pointent désormais vers ceux-là :
+  plus aucun octet de latin étendu n'est téléchargé, et le préchargement joue
+  enfin son rôle. Voir le piège des noms inversés en § 6.
 - **Images d'attente des héros** (fournies par le client le 13 août 2026) :
   `hero-sport` et `hero-corporate`, posées en `background-image` sous l'iframe,
   qui les recouvre au démarrage du lecteur. Elles couvrent les trois cas où la
@@ -226,12 +233,21 @@ consentement, 10 Mo d'images, aucune donnée structurée.
 
 ## 5. Ce qui reste à faire
 
-### 2.2 — un point de finition possible
-La barre de dégradé posée sur le hero Sport part de 15 % d'opacité en haut,
-là où se trouve justement le titre. Sur fond de vidéo sombre cela passait sans
-qu'on y pense ; avec l'image d'attente, plus lumineuse, « Absolute Cinema »
-ressort un peu moins. Un renforcement du haut du dégradé le réglerait, mais
-c'est une retouche esthétique : à proposer au client, pas à décider seul.
+### 2.2 — dégradé du hero Sport : arbitré
+Le titre « Absolute Cinema » ressort un peu moins sur l'image d'attente que sur
+la vidéo sombre. **Le client ne veut pas de retouche du dégradé (13 août 2026).**
+Ne pas y revenir.
+
+### Bloc photo du hero corporate
+`.corp-hero-media` est toujours masqué (`hidden` + `display:none`). Le visuel
+retenu par le client est noté dans `data-visuel-retenu="alban-portrait.jpg"`,
+**sans attribut `src`** : une image reste téléchargée même dans un bloc masqué,
+c'est ce qui a fait retirer l'ancienne image picsum.photos. Le mode d'emploi
+pour l'afficher est en commentaire juste au-dessus, dans `site.html`. Deux
+points à trancher au moment de le faire : `.corp-hero` est en une seule colonne
+(l'image se placerait sous le texte), et le cadre 4/5 recadre sévèrement une
+photo 3/2. À noter aussi que `alban-portrait` sert déjà de fond au hero de la
+page À propos : la réutiliser ici fait doublon.
 
 **Ce qui n'a pas pu être mesuré** : le volume réellement diffusé par les
 lecteurs Vimeo. Le contenu d'une iframe d'un autre domaine est invisible aux
@@ -273,10 +289,13 @@ vérification visuelle faite, ils restent lisibles grâce au dégradé de surimp
 - Le `<h1>` de la page Sport est « Absolute Cinema » : fort visuellement mais
   ne cible aucune requête. Alternative à proposer au client avant modification.
 
-### 2.5 — formulaire de contact
-- Vérifier qu'un message arrive réellement sur `contact@alban-production.fr`
-  (le compte Formspree pointait auparavant vers une adresse Gmail). Test non
-  effectué ici : il enverrait un vrai message au client.
+### 2.5 — formulaire de contact : clos
+Les messages arrivent sur l'adresse Gmail du client, et non sur
+`contact@alban-production.fr`. **Le client s'en accommode (13 août 2026)** : ne
+pas modifier la destination Formspree. La politique de confidentialité annonce
+`contact@alban-production.fr` comme adresse de contact du responsable de
+traitement, ce qui reste exact — c'est la boîte de réception technique qui
+diffère, pas l'interlocuteur.
 
 ### Contenus manquants
 - **Photo du hero corporate** : le bloc `.corp-hero-media` existe, masqué et
@@ -324,6 +343,16 @@ failli neutraliser la synchronisation des vignettes Vimeo : le script réécriva
 bien `img.src`, mais le navigateur continuait d'afficher le `<source>`.
 `syncVimeoThumbnails()` retire donc les `<source>` avant de poser la nouvelle
 image. À garder en tête pour toute image locale pilotée par JavaScript.
+
+**Les noms des fichiers de polices sont inversés.** Les 16 fichiers nommés
+`…-ext.woff2` contiennent le **jeu latin de base** — celui qui écrit le texte
+français. Les 16 fichiers **sans** suffixe contiennent le **latin étendu**,
+qu'aucun caractère du site n'utilise. Se fier au `unicode-range` déclaré dans
+`assets/fonts.css`, **jamais au nom du fichier** : `U+0000-00FF…` = latin,
+`U+0100-02BA…` = latin étendu. C'est ce piège qui faisait précharger 133 Ko
+inutiles sur chaque page. Renommer les fichiers serait plus sain, mais macOS
+ne distingue pas la casse et un renommage croisé est risqué — voir le piège
+suivant.
 
 **L'enveloppe `<picture>` casse les grilles si on l'oublie.** Le build enveloppe
 les images en `<picture>` pour le repli WebP. Cette enveloppe devient alors
