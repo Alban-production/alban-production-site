@@ -72,7 +72,9 @@ bash ~/Documents/Claude/public/_src/webp.sh   # puis relancer build.sh
 ```
 
 Le script ne traite que les images réellement affichées, listées depuis les
-sources HTML : la racine de `public/` contient aussi de vieux originaux
+sources HTML **et depuis les `url()` de `assets/styles.css`** (les images
+d'attente des héros n'ont pas de balise `<img>`) : la racine de `public/`
+contient aussi de vieux originaux
 (`portrait.JPG`, `Sport.jpeg`…) qui ne sont pas déployés. Il essaie chaque image
 avec et sans perte, garde la plus légère, et **écarte tout gain inférieur à 10 %**
 pour ne pas multiplier les fichiers sans raison. `og-image.jpg` est exclue : les
@@ -206,31 +208,24 @@ consentement, 10 Mo d'images, aucune donnée structurée.
   visite : le navigateur récupère les images en `display:none`. C'était un
   transfert d'IP vers un service tiers, du même ordre que les polices Google
   supprimées en phase 1. Le bloc est conservé, vide, pour une vraie photo.
+- **Images d'attente des héros** (fournies par le client le 13 août 2026) :
+  `hero-sport` et `hero-corporate`, posées en `background-image` sous l'iframe,
+  qui les recouvre au démarrage du lecteur. Elles couvrent les trois cas où la
+  vidéo n'est pas là : pendant son chargement, en permanence pour qui a demandé
+  l'économie de données ou la réduction des animations, et si Vimeo est
+  indisponible. Servies en WebP via `image-set()`, avec le JPEG en repli sur la
+  déclaration précédente : 89 et 102 Ko au lieu de 322 et 320 Ko.
 
 ---
 
 ## 5. Ce qui reste à faire
 
-### 2.2 — image d'attente des héros
-Quand la vidéo ne se charge pas (économie de données, animations réduites,
-Vimeo bloqué), le hero affiche son fond peint : sombre côté Sport, papier côté
-Corporate. C'est cohérent — l'habillage du titre est de toute façon posé
-par-dessus — mais une vraie image d'attente serait plus riche.
-Il faut pour cela **un export local d'une image des deux vidéos**
-— [[À COMPLÉTER : deux images fixes, hero Sport et hero Corporate]]. Ne pas la
-tirer d'un service tiers : cela réintroduirait la requête que le chargement
-différé vient d'éviter.
-
-L'image sert dans trois cas, pas seulement pendant le chargement :
-1. le temps que le lecteur Vimeo démarre ;
-2. **en permanence** pour qui a demandé l'économie de données ou la réduction
-   des animations — ces visiteurs ne verront jamais la vidéo ;
-3. si Vimeo est bloqué ou indisponible.
-
-Mise en œuvre prévue : `background-image` sur `.sport-hero-bg` et
-`.corp-hero-bg`, donc sous l'iframe, qui la recouvre une fois chargée. Aucune
-balise à ajouter. Fournir deux fichiers larges (1920 px au moins), le script
-`webp.sh` s'occupe de l'allègement.
+### 2.2 — un point de finition possible
+La barre de dégradé posée sur le hero Sport part de 15 % d'opacité en haut,
+là où se trouve justement le titre. Sur fond de vidéo sombre cela passait sans
+qu'on y pense ; avec l'image d'attente, plus lumineuse, « Absolute Cinema »
+ressort un peu moins. Un renforcement du haut du dégradé le réglerait, mais
+c'est une retouche esthétique : à proposer au client, pas à décider seul.
 
 **Ce qui n'a pas pu être mesuré** : le volume réellement diffusé par les
 lecteurs Vimeo. Le contenu d'une iframe d'un autre domaine est invisible aux
@@ -278,10 +273,9 @@ vérification visuelle faite, ils restent lisibles grâce au dégradé de surimp
   effectué ici : il enverrait un vrai message au client.
 
 ### Contenus manquants
-- **Images d'attente des vidéos de fond** (voir 2.2) — la seule pièce qui bloque
-  encore une tâche en cours.
-- **Photo du hero corporate** : le bloc existe, masqué et vide, en attente d'une
-  vraie photo de tournage et de sa légende.
+- **Photo du hero corporate** : le bloc `.corp-hero-media` existe, masqué et
+  vide, en attente d'une vraie photo de tournage et de sa légende. Sans rapport
+  avec l'image d'attente de la vidéo, qui est en place.
 
 ---
 
